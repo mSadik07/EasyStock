@@ -5,6 +5,6 @@
 
 ## Proje Hakkında
 
-![Ürün Tanıtım Görseli](<img width="2816" height="1536" alt="EasyStock" src="https://github.com/user-attachments/assets/3c4d5ca0-4d69-4bf9-a599-6c50aa0428cf" />
-)
+<img width="2816" height="1536" alt="EasyStock" src="https://github.com/user-attachments/assets/b699b56b-69c3-4660-9a6c-8261363c1021" />
+
 
