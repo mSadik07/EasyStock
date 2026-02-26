@@ -30,7 +30,7 @@
 * **API Metodu:** `DELETE /products/:id`
 * **Açıklama:** Artık satılmayan veya yanlış eklenen bir ürünü sistemden tamamen kaldırır.
 
-### 9. Kategori Yönetimi
+### 9. Kategori Listeleme
 * **API Metodu:** `POST /categories` & `GET /categories`
 * **Açıklama:** Ürünleri gruplandırmak için (Örn: Gıda, Kozmetik) yeni kategoriler oluşturur ve mevcut kategorileri listeler.
 
@@ -54,6 +54,4 @@
 * **API Metodu:** `GET /notifications`
 * **Açıklama:** Kritik stok uyarılarını ve sistem mesajlarını kullanıcıya iletir. Mobil cihazlarda push bildirim tetikleyicisi olarak çalışır.
 
-### 15. Veri Dışa Aktarma (Export)
-* **API Metodu:** `GET /reports/export`
-* **Açıklama:** Mevcut envanter durumunu ve raporları Excel veya PDF formatında indirilebilir bir dosya olarak hazırlar.
+
