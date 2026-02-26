@@ -5,4 +5,5 @@
 
 ## Proje Hakkında
 
-<img width="2816" height="1536" alt="Gemini_Generated_Image_5aa5vk5aa5vk5aa5" src="https://github.com/user-attachments/assets/cf50f695-8039-4732-acd7-082e2700e0f3" />
+![Ürün Tanıtım Görseli]<img width="2816" height="1536" alt="EasyStock" src="https://github.com/user-attachments/assets/f40ded2a-0f33-4317-b91d-7835a0928213" />
+
