@@ -9,6 +9,6 @@
 
 **Proje Tanımı:**
 
-EasyStock, küçük işletmelerin karmaşık envanter süreçlerini dijitalleştiren ve satış verilerini kullanarak geleceğe dair öngörüler sunan akıllı bir stok yönetim çözümüdür. Sistem, sadece ürün miktarını takip etmekle kalmaz, aynı zamanda geçmiş satış hızınızı analiz ederek stoklarınızın tam olarak kaç gün sonra tükeneceğini hesaplar. Kritik seviye uyarıları sayesinde, ürünleriniz henüz bitmeden sizi uyararak ticaretinizin aksamasını önler ve verimliliği artırır.
+**** EasyStock, küçük işletmelerin envanter yönetimini manuel karmaşadan kurtarıp dijital bir profesyonelliğe taşıyan akıllı bir stok takip çözümüdür. Sistem, sadece ürünlerin miktarını saymakla kalmaz, aynı zamanda geçmiş satış verilerini kullanarak her ürünün tüketim hızını otomatik olarak analiz eder. Bu analiz sayesinde, mevcut stoklarınızın kaç gün içinde tükeneceğini önceden tahmin ederek "ne zaman sipariş vermeliyim?" sorusunu sizin yerinize yanıtlar. İşletme sahipleri, belirledikleri kritik sınırların altına düşen ürünler için hem web hem de mobil cihazlarına anlık bildirimler alarak ticaretin aksamasını engeller.
 
 
