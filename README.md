@@ -27,7 +27,7 @@ Business & Inventory Management System
 ## Proje Ekibi
 
 **Grup Adı:** 
-Nexus
+> Nexus
 
 **Ekip Üyeleri:** 
--Mehmet Sadık Avcı
+- Mehmet Sadık Avcı
