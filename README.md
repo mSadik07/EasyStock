@@ -37,4 +37,10 @@ Business & Inventory Management System
 
 ## Dokümantasyon
 
-1. [Gereksinim Analizi](https://github.com/mSadik07/EasyStock/blob/main/Mehmet-Sad%C4%B1k-Avc%C4%B1%20/Mehmet-Sad%C4%B1k-Avc%C4%B1-Gereksinimler.md)
+1. [Gereksinim Analizi](Gereksinim-Analizi.md)
+2. [REST API Tasarımı](API-Tasarimi.md)
+3. [REST API](Rest-API.md)
+4. [Web Front-End](WebFrontEnd.md)
+5. [Mobil Front-End](MobilFrontEnd.md)
+6. [Mobil Backend](MobilBackEnd.md)
+7. [Video Sunum](Sunum.md)
