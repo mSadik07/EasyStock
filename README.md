@@ -15,3 +15,9 @@
 **Proje Kategorisi:**
 
 Business & Inventory Management System
+
+
+## Proje Linkleri
+
+- **REST API Adresi:**
+- **Web Frontend Adresi:**
