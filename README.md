@@ -21,3 +21,13 @@ Business & Inventory Management System
 
 - **REST API Adresi:**
 - **Web Frontend Adresi:**
+
+
+
+## Proje Ekibi
+
+**Grup Adı:** 
+Nexus
+
+**Ekip Üyeleri:** 
+-Mehmet Sadık Avcı
