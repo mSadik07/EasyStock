@@ -5,7 +5,7 @@
 
 ## Proje Hakkında
 
-
+![Ürün Tanıtım Görseli](EasyStock.png)
 
 **Proje Tanımı:**
 
