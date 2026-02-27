@@ -37,4 +37,4 @@ Business & Inventory Management System
 
 ## Dokümantasyon
 
-1. [Gereksinim Analizi]
+1. [Gereksinim Analizi](https://github.com/mSadik07/EasyStock/blob/main/Mehmet-Sad%C4%B1k-Avc%C4%B1%20/Mehmet-Sad%C4%B1k-Avc%C4%B1-Gereksinimler.md)
