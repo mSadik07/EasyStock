@@ -12,3 +12,5 @@
    EasyStock, küçük işletmelerin envanter yönetimini manuel karmaşadan kurtarıp dijital bir profesyonelliğe taşıyan akıllı bir stok takip çözümüdür. Sistem, sadece ürünlerin miktarını saymakla kalmaz, aynı zamanda geçmiş satış verilerini kullanarak her ürünün tüketim hızını otomatik olarak analiz eder. Bu analiz sayesinde, mevcut stoklarınızın kaç gün içinde tükeneceğini önceden tahmin ederek "ne zaman sipariş vermeliyim?" sorusunu sizin yerinize yanıtlar. İşletme sahipleri, belirledikleri kritik sınırların altına düşen ürünler için hem web hem de mobil cihazlarına anlık bildirimler alarak ticaretin aksamasını engeller.
 
 
+**Proje Kategorisi:**
+Business & Inventory Management System
