@@ -32,6 +32,9 @@ Business & Inventory Management System
 **Ekip Üyeleri:** 
 - Mehmet Sadık Avcı
 
+
+
+
 ## Dokümantasyon
 
 1. [Gereksinim Analizi]
