@@ -23,7 +23,7 @@
 * **Açıklama:** Belirli bir ürünün tüm detaylarını getirir. Mobil cihazdan barkod taratıldığında ilgili ürünün bilgilerine ulaşmak için kullanılır.
 
 ### 7. Stok Miktarı Güncelleme
-* **API Metodu:** `PATCH /products/:id/stock`
+* **API Metodu:** `PUT /products/:id/stock`
 * **Açıklama:** Mevcut bir ürünün stok adedini manuel olarak artırır (mal kabul) veya azaltır (fire/düzeltme). Sadece miktar alanını güncellediği için `PATCH` kullanılır.
 
 ### 8. Ürün Silme
