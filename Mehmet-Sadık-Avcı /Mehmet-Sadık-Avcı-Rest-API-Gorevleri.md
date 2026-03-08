@@ -10,7 +10,7 @@ Bu döküman, **EasyStock (Küçük İşletme Stok ve Kritik Seviye Uyarıcı)**
 * **Endpoint:** `POST /auth/register`
 * **Açıklama:** Yeni kullanıcı hesabı oluşturur.
 * **Request Body:**
-```json
+
 {
   "email": "kullanici@example.com",
   "password": "Guvenli123!",
