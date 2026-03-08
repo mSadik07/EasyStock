@@ -19,7 +19,7 @@ Business & Inventory Management System
 
 ## Proje Linkleri
 
-- **REST API Adresi:**
+- **REST API Adresi:** [api.easystock.com](https://api.easystock.com/)
 - **Web Frontend Adresi:**
 
 
