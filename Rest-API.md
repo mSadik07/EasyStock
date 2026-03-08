@@ -3,4 +3,4 @@
 
 ---
 ## Grup Üyelerinin REST API Metotları
-1. [Mehmet Sadık Avcı'nın REST API Metotları](Mehmet-Sadık-Avcı/Mehmet-Sadık-Avcı-Rest-API-Gorevleri.md)
+1. [Mehmet Sadık Avcı'nın REST API Metotları](Mehmet-Sadık-Avcı-Rest-API-Gorevleri.md)
