@@ -1,22 +1,15 @@
-# 🚀 EasyStock REST API Dokümantasyonu
+# 🚀 EasyStock REST API Tasarımı
 
-Bu döküman, **EasyStock** projesinin backend uç noktalarını ve veri yapılarını senin verdiğin standartlara göre tanımlar.
-
----
-
-## 🔐 1. Kullanıcı ve Yetkilendirme
-
-### **1. Üye Olma**
+## 1. Üye Olma
 - **Endpoint:** `POST /auth/register`
 - **Request Body:**
-  ```json
-  {
-    "email": "kullanici@example.com",
-    "password": "Guvenli123!",
-    "firstName": "Ahmet",
-    "lastName": "Yılmaz",
-    "businessName": "Sadık Usta Butik"
-  }
+```json
+{
+  "email": "kullanici@example.com",
+  "password": "Guvenli123!",
+  "businessName": "Sadık Usta Butik",
+  "fullName": "Sadık Yılmaz"
+}
 Response: 201 Created - Kullanıcı başarıyla oluşturuldu.
 
 2. Giriş Yapma
@@ -43,7 +36,6 @@ JSON
 }
 Response: 200 OK - Profil başarıyla güncellendi.
 
-📦 2. Ürün ve Stok Yönetimi
 4. Yeni Ürün Ekleme
 Endpoint: POST /products
 
@@ -74,11 +66,12 @@ Response: 200 OK - Belirli ürüne ait JSON verisi döner.
 7. Stok Miktarı Güncelleme (Manuel)
 Endpoint: PATCH /products/{id}/stock
 
-Request Body: ```json
-{
-"adjustment": 15
-}
+Request Body:
 
+JSON
+{ 
+  "adjustment": 15 
+}
 Response: 200 OK - Güncel stok miktarı döner.
 
 8. Ürün Silme
@@ -89,30 +82,29 @@ Response: 204 No Content - Ürün başarıyla silindi.
 9. Kategori Yönetimi
 Endpoint: POST /categories
 
-Request Body: ```json
-{
-"name": "Giyim"
-}
+Request Body:
 
+JSON
+{ 
+  "name": "Giyim" 
+}
 Response: 201 Created - Kategori oluşturuldu.
 
-🧠 3. Akıllı Analiz ve Tahminleme (Madde 1)
-10. Akıllı Kritik Stok Listesi
+10. Akıllı Kritik Stok Listesi (Madde 1)
 Endpoint: GET /analytics/low-stock
 
 Response: 200 OK - Bitmeye yaklaşan ve kritik seviye altındaki ürünler döner.
 
-11. Stok Ömrü Tahminleme
+11. Stok Ömrü Tahminleme (Madde 1)
 Endpoint: GET /analytics/predict/{id}
 
 Response: 200 OK - { "estimatedDays": 12, "predictionDate": "2026-03-20" }
 
-12. Ölü Stok Analizi
+12. Ölü Stok Analizi (Madde 1)
 Endpoint: GET /analytics/dead-stock
 
 Response: 200 OK - Son 30 gündür satılmayan ürünlerin listesi.
 
-🛒 4. Satış ve Sistem İşlemleri
 13. Satış Kaydı Oluşturma
 Endpoint: POST /sales
 
@@ -130,9 +122,4 @@ Response: 201 Created - Satış kaydedildi, stok otomatik düştü.
 14. Bildirim Yönetimi
 Endpoint: GET /notifications
 
-Response: 200 OK - Okunmamış stok uyarıları listesi döner.
-
-15. Veri Dışa Aktarma (Export)
-Endpoint: GET /reports/export
-
-Response: 200 OK - İndirilebilir dosya bağlantısı veya stream döner.
+Response: 200 OK - Okunmamış stok uyarıları listesi.
