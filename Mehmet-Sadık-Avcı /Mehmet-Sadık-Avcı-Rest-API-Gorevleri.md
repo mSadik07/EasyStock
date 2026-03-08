@@ -125,7 +125,7 @@
 ```
 - **Response:** `201 Created` - Satış kaydedildi, stok otomatik düştü.
 
-##14. Bildirim Yönetimi
+## 14. Bildirim Yönetimi
 - **Endpoint:** GET /notifications
 
 - **Response:** `200 OK` - Okunmamış stok uyarıları listesi.
