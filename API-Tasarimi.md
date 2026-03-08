@@ -1,11 +1,3 @@
-# API Tasarımı - OpenAPI Specification Örneği
-
-Bu doküman, OpenAPI Specification (OAS) 3.0 standardına göre hazırlanmış örnek bir API tasarımını içermektedir.
-
-## OpenAPI Nedir?
-
-**OpenAPI** (eski adıyla Swagger), RESTful API'lerin tasarımı, dokümantasyonu ve kullanımı için kullanılan açık bir spesifikasyondur. OpenAPI, API'lerin yapısını, endpoint'lerini, parametrelerini, request/response formatlarını ve güvenlik gereksinimlerini standart bir formatta tanımlamanıza olanak sağlar.
-
 openapi: 3.0.0
 info:
   title: EasyStock API
