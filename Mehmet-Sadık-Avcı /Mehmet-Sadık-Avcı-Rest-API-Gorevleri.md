@@ -10,6 +10,7 @@
   "businessName": "Sadık Usta Butik",
   "fullName": "Sadık Yılmaz"
 }
+```
 Response: 201 Created - Kullanıcı başarıyla oluşturuldu.
 
 2. Giriş Yapma
@@ -17,11 +18,12 @@ Endpoint: POST /auth/login
 
 Request Body:
 
-JSON
+```json
 {
   "email": "kullanici@example.com",
   "password": "Guvenli123!"
 }
+```
 Response: 200 OK - { "token": "eyJhbG..." } (JWT Token döner).
 
 3. Profil ve İşletme Güncelleme
@@ -29,11 +31,12 @@ Endpoint: PUT /auth/profile
 
 Request Body:
 
-JSON
+```json
 {
   "businessName": "Sadık Usta Yeni İşletme Adı",
   "phone": "0555..."
 }
+```
 Response: 200 OK - Profil başarıyla güncellendi.
 
 4. Yeni Ürün Ekleme
@@ -41,7 +44,7 @@ Endpoint: POST /products
 
 Request Body:
 
-JSON
+```json
 {
   "name": "Siyah Tişört L Beden",
   "barcode": "8691234567",
@@ -51,6 +54,7 @@ JSON
   "sellPrice": 250.00,
   "minStockLevel": 10
 }
+```
 Response: 201 Created - Ürün başarıyla eklendi.
 
 5. Stok Listeleme
@@ -68,10 +72,11 @@ Endpoint: PATCH /products/{id}/stock
 
 Request Body:
 
-JSON
+```json
 { 
   "adjustment": 15 
 }
+```
 Response: 200 OK - Güncel stok miktarı döner.
 
 8. Ürün Silme
@@ -84,10 +89,11 @@ Endpoint: POST /categories
 
 Request Body:
 
-JSON
+```json
 { 
   "name": "Giyim" 
 }
+```
 Response: 201 Created - Kategori oluşturuldu.
 
 10. Akıllı Kritik Stok Listesi (Madde 1)
@@ -110,13 +116,14 @@ Endpoint: POST /sales
 
 Request Body:
 
-JSON
+```json
 {
   "productId": "505",
   "quantity": 2,
   "totalPrice": 500.00,
   "paymentMethod": "Credit Card"
 }
+```
 Response: 201 Created - Satış kaydedildi, stok otomatik düştü.
 
 14. Bildirim Yönetimi
