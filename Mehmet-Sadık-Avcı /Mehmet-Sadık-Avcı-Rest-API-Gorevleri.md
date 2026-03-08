@@ -24,7 +24,7 @@
   "password": "Guvenli123!"
 }
 ```
-- **Response:** `200 OK` - { "token": "eyJhbG..." } (JWT Token döner).
+- **Response:** `200 OK` - `{ "token": "eyJhbG..." } (JWT Token döner).`
 
 ## 3. Profil ve İşletme Güncelleme
 - **Endpoint:** PUT /auth/profile
