@@ -1,138 +1,274 @@
 ##Bu doküman, OpenAPI Specification (OAS) 3.0 standardına göre hazırlanmış örnek bir API tasarımını içermektedir.
 
 
-openapi: 3.0.0
+openapi: 3.0.3
 info:
-  title: EasyStock API
-  description: Küçük İşletmeler İçin Akıllı Stok ve Analitik Takip Sistemi API Dökümantasyonu.
+  title: EasyStock Akıllı Stok ve Analitik Yönetimi API
   version: 1.0.0
+  description: >
+    Bu API, küçük işletmelerin stok takibi, akıllı kritik seviye analizi ve satış
+    yönetimi için tasarlanmış bir RESTful servistir. Geçmiş satış verilerinden
+    faydalanarak stok ömrü tahminleme ve ölü stok analizi gibi akıllı özellikler sunar.
+    API, JWT (Bearer Token) tabanlı kimlik doğrulama ile korunmaktadır.
+  contact:
+    name: Sadık Avcı
+    email: destek@easystock.com
 
 servers:
   - url: https://api.easystock.com/v1
-    description: Üretim Sunucusu
+    description: Üretim sunucusu (Production)
+  - url: http://localhost:3000/v1
+    description: Yerel geliştirme sunucusu (Development)
 
-components:
-  securitySchemes:
-    bearerAuth:
-      type: http
-      scheme: bearer
-      bearerFormat: JWT
+tags:
+  - name: Kimlik Doğrulama
+    description: Kayıt, giriş ve kullanıcı profil işlemleri
+  - name: Stok Yönetimi
+    description: Ürün ekleme, listeleme, güncelleme ve kategori işlemleri
+  - name: Akıllı Analiz
+    description: Tahminleme, kritik seviye uyarıları ve ölü stok raporları
+  - name: Satış ve Sistem
+    description: Satış kayıtları, bildirimler ve veri dışa aktarma
+
+security:
+  - BearerAuth: []
 
 paths:
-  # --- KULLANICI VE YETKİLENDİRME ---
+  # --- 1, 2. ÜYE OLMA VE GİRİŞ ---
   /auth/register:
     post:
-      summary: Yeni kullanıcı kaydı
-      tags: [Auth]
+      tags: [Kimlik Doğrulama]
+      summary: Üye Olma
+      operationId: registerUser
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UserInput'
+      responses:
+        "201":
+          description: Kullanıcı başarıyla oluşturuldu
+        "400":
+          description: Geçersiz veri girişi
+
+  /auth/login:
+    post:
+      tags: [Kimlik Doğrulama]
+      summary: Giriş Yapma
+      operationId: loginUser
       requestBody:
         required: true
         content:
           application/json:
             schema:
               type: object
+              required: [email, password]
               properties:
-                username: {type: string}
-                email: {type: string}
-                password: {type: string}
+                email: { type: string, format: email }
+                password: { type: string }
       responses:
-        '201':
-          description: Kullanıcı başarıyla oluşturuldu.
+        "200":
+          description: Giriş başarılı
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  token: { type: string, example: "eyJhbG..." }
 
-  /auth/login:
-    post:
-      summary: Kullanıcı girişi
-      tags: [Auth]
-      responses:
-        '200':
-          description: Giriş başarılı, JWT token döner.
-
+  # --- 3. PROFİL GÜNCELLEME ---
   /auth/profile:
     put:
-      summary: Profil ve işletme bilgilerini güncelleme
-      tags: [Auth]
+      tags: [Kimlik Doğrulama]
+      summary: Profil ve İşletme Güncelleme
       security:
-        - bearerAuth: []
-      responses:
-        '200':
-          description: Profil güncellendi.
-
-  # --- ÜRÜN VE STOK YÖNETİMİ ---
-  /products:
-    get:
-      summary: Tüm ürünleri listeleme
-      tags: [Products]
-      responses:
-        '200':
-          description: Ürün listesi başarıyla getirildi.
-    post:
-      summary: Yeni ürün ekleme
-      tags: [Products]
-      security:
-        - bearerAuth: []
-      responses:
-        '201':
-          description: Ürün eklendi.
-
-  /products/{id}:
-    get:
-      summary: Ürün detayını getir
-      tags: [Products]
-      parameters:
-        - name: id
-          in: path
-          required: true
-          schema: {type: string}
-    delete:
-      summary: Ürünü sil
-      tags: [Products]
-      security:
-        - bearerAuth: []
-      responses:
-        '200':
-          description: Ürün silindi.
-
-  /products/barcode/{code}:
-    get:
-      summary: Barkod ile ürün sorgulama
-      tags: [Products]
-      parameters:
-        - name: code
-          in: path
-          required: true
-          schema: {type: string}
-
-  /products/{id}/stock:
-    patch:
-      summary: Stok miktarını güncelle (Manuel)
-      tags: [Products]
+        - BearerAuth: []
       requestBody:
         content:
           application/json:
             schema:
+              type: object
               properties:
-                adjustment: {type: integer, description: "Örn: +10 veya -5"}
+                businessName: { type: string, example: "Sadık Usta Yeni İşletme Adı" }
+                phone: { type: string, example: "0555..." }
       responses:
-        '200':
-          description: Stok güncellendi.
+        "200":
+          description: Profil güncellendi
 
+  # --- 4, 5. ÜRÜN İŞLEMLERİ ---
+  /products:
+    get:
+      tags: [Stok Yönetimi]
+      summary: Stok Listeleme
+      responses:
+        "200":
+          description: Başarılı ürün listesi
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Product'
+    post:
+      tags: [Stok Yönetimi]
+      summary: Yeni Ürün Ekleme
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ProductInput'
+      responses:
+        "201":
+          description: Ürün eklendi
+
+  # --- 6, 7, 8. TEKİL ÜRÜN İŞLEMLERİ ---
+  /products/{productid}:
+    parameters:
+      - name: productid
+        in: path
+        required: true
+        schema: { type: string }
+    get:
+      tags: [Stok Yönetimi]
+      summary: Ürün Detayı Getir
+    patch:
+      tags: [Stok Yönetimi]
+      summary: Stok Miktarı Güncelleme (7. Madde)
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                adjustment: { type: integer, example: 15 }
+    delete:
+      tags: [Stok Yönetimi]
+      summary: Ürün Silme
+
+  /products/barcode/{barcode}:
+    get:
+      tags: [Stok Yönetimi]
+      summary: Barkod ile Ürün Sorgulama
+      parameters:
+        - name: barcode
+          in: path
+          required: true
+          schema: { type: string }
+
+  # --- 9. KATEGORİ ---
   /categories:
     get:
-      summary: Kategorileri listele
+      tags: [Stok Yönetimi]
+      summary: Kategorileri Listele
     post:
-      summary: Yeni kategori oluştur
+      tags: [Stok Yönetimi]
+      summary: Kategori Oluşturma
 
-  # --- AKILLI ANALİTİK (MADDE 1) ---
+  # --- 10, 11, 12. AKILLI ANALİTİK (MADDE 1) ---
   /analytics/low-stock:
     get:
-      summary: Kritik seviyedeki ürünleri listele
-      tags: [Analytics]
+      tags: [Akıllı Analiz]
+      summary: Akıllı Kritik Stok Listesi
+      responses:
+        "200":
+          description: Bitmesi muhtemel ürünler listelendi
 
-  /analytics/predict/{id}:
+  /analytics/predict/{productid}:
     get:
-      summary: Stok ömrü tahmini (Kalan gün sayısı)
-      tags: [Analytics]
+      tags: [Akıllı Analiz]
+      summary: Stok Ömrü Tahminleme
+      responses:
+        "200":
+          description: Tahmin verisi döndürüldü
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Prediction'
 
   /analytics/dead-stock:
     get:
-      summary: Hareket görmeyen ölü stok analizi
-      tags: [Analytics]
+      tags: [Akıllı Analiz]
+      summary: Ölü Stok Analizi
+
+  # --- 13, 14, 15. SATIŞ VE SİSTEM ---
+  /sales:
+    post:
+      tags: [Satış ve Raporlama]
+      summary: Satış Kaydı Oluşturma
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/SaleInput'
+
+  /notifications:
+    get:
+      tags: [Satış ve Raporlama]
+      summary: Bildirim Yönetimi
+
+  /reports/export:
+    get:
+      tags: [Satış ve Raporlama]
+      summary: Veri Dışa Aktarma (Export)
+
+components:
+  securitySchemes:
+    BearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
+
+  schemas:
+    Product:
+      type: object
+      properties:
+        _id: { type: string, example: "prod123" }
+        name: { type: string, example: "Siyah Tişört L Beden" }
+        barcode: { type: string, example: "8691234567" }
+        stockQuantity: { type: integer, example: 50 }
+        sellPrice: { type: number, example: 250.0 }
+        minStockLevel: { type: integer, example: 10 }
+
+    ProductInput:
+      type: object
+      required: [name, barcode, stockQuantity, buyPrice, sellPrice]
+      properties:
+        name: { type: string, minLength: 2 }
+        barcode: { type: string }
+        stockQuantity: { type: integer, minimum: 0 }
+        buyPrice: { type: number }
+        sellPrice: { type: number }
+        minStockLevel: { type: integer, default: 5 }
+
+    UserInput:
+      type: object
+      required: [email, password, firstName, lastName]
+      properties:
+        email: { type: string, format: email }
+        password: { type: string, minLength: 8 }
+        firstName: { type: string }
+        lastName: { type: string }
+        businessName: { type: string }
+
+    SaleInput:
+      type: object
+      required: [productId, quantity]
+      properties:
+        productId: { type: string }
+        quantity: { type: integer, minimum: 1 }
+        paymentMethod: { type: string, enum: [Cash, CreditCard] }
+
+    Prediction:
+      type: object
+      properties:
+        estimatedDays: { type: integer, example: 12 }
+        predictionDate: { type: string, format: date }
+
+    Error:
+      type: object
+      required: [message]
+      properties:
+        message: { type: string, example: "Ürün bulunamadı" }
