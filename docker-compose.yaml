@@ -1,41 +1,35 @@
-
 services:
-  # VERİTABANI SERVİSİ
+  # VERİTABANI
   db:
     image: mongo:latest
-    container_name: mongodb_kapsayici
+    container_name: easystock_db
     ports:
       - "27017:27017"
     networks:
-      - benimagim
-    volumes:
-      - ./data/db:/data/db
-    restart: always
+      - easystock-network
 
-  # BACKEND SERVİSİ (API)
+  # BACKEND (REST API)
   backend:
     build: ./easystock-api
     container_name: easystock_api_kapsayici
     ports:
       - "9000:9000"
-    networks:
-      - benimagim
     depends_on:
       - db
-    command: npm start
+    networks:
+      - easystock-network
 
-  # FRONTEND SERVİSİ
+  # FRONTEND
   frontend:
     build: ./easystock-frontend
     container_name: easystock_front_kapsayici
     ports:
       - "3000:3000"
-    networks:
-      - benimagim
     depends_on:
       - backend
-    command: npm start
+    networks:
+      - easystock-network
 
 networks:
-  benimagim:
+  easystock-network:
     driver: bridge
