@@ -1,8 +1,9 @@
 const express = require('express');
-const router = express.アプリ.router();
-const ctrlProducts = require('../controllers/ProductController');
+const router = express.Router();
+// Klasör adının 'controllers' (s takılı) olduğundan emin ol!
+const ctrlAuth = require('../controllers/AuthController');
 
-// Gereksinim 1 için endpoint
-router.get('/predict/:productId', ctrlProducts.predictStockLife);
+router.post('/register', ctrlAuth.register);
+router.post('/login', ctrlAuth.login);
 
 module.exports = router;
