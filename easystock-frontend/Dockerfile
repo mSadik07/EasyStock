@@ -1,18 +1,8 @@
-# 1. Temel imajı belirle
-FROM node:latest
+# 1. Hafif bir web sunucusu (Nginx) kullanıyoruz
+FROM nginx:alpine
 
-# 2. Çalışma dizinini ayarla
-WORKDIR /app
+# 2. index.html dosyanı sunucunun ana klasörüne kopyalıyoruz
+COPY index.html /usr/share/nginx/html/index.html
 
-# 3. Bağımlılıkları kopyala ve yükle
-COPY package.json ./
-RUN npm install
-
-# 4. Kaynak kodları kopyala
-COPY . .
-
-# 5. Frontend portunu (3000) dışarı aç
-EXPOSE 3000
-
-# 6. Uygulamayı başlat
-CMD ["npm", "start"]
+# 3. Web trafiği için 80 portunu açıyoruz
+EXPOSE 80

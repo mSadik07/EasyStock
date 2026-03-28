@@ -1,335 +1,123 @@
 const mongoose = require('mongoose');
 const Product = mongoose.model('Product');
 
-// Gereksinim 4: Ürün Ekleme (Zaten vardı)
+// --- ÜRÜN İŞLEMLERİ ---
+
+// Req 5 & 10: Ürün Listeleme ve Kategori Filtreleme
+const getProducts = async (req, res) => {
+    try {
+        const { category } = req.params;
+        const query = category ? { category: category } : {};
+        const products = await Product.find(query);
+        res.status(200).json({ status: "başarılı", products });
+    } catch (err) {
+        res.status(400).json({ status: "hata", message: err.message });
+    }
+};
+
+// Req 4: Yeni Ürün Ekleme
 const addProduct = async (req, res) => {
     try {
-        const product = await Product.create(req.body);
-        res.status(201).json({ status: "başarılı", message: "Ürün eklendi", product });
+        const newProduct = await Product.create(req.body);
+        res.status(201).json({ status: "başarılı", product: newProduct });
     } catch (err) {
-        res.status(400).json({ status: "hata", error: err.message });
+        res.status(400).json({ status: "hata", message: "Barkod zaten kayıtlı olabilir!" });
     }
 };
 
-// Gereksinim 5: Tüm Stokları Listeleme (YENİ EKLE!)
-const listAllProducts = async (req, res) => {
+// Req 7: Stok Güncelleme (Miktarın üzerine ekler)
+const updateProduct = async (req, res) => {
     try {
-        const products = await Product.find(); // Veritabanındaki tüm ürünleri getir
-        res.status(200).json({ 
-            status: "başarılı", 
-            count: products.length, 
-            products 
-        });
+        const { barcode } = req.params;
+        const { stockQuantity } = req.body;
+        const product = await Product.findOne({ barcode });
+        if (!product) return res.status(404).json({ message: "Ürün bulunamadı" });
+
+        product.stockQuantity += Number(stockQuantity);
+        await product.save();
+        res.status(200).json({ status: "başarılı", product });
     } catch (err) {
-        res.status(500).json({ status: "hata", error: err.message });
+        res.status(400).json({ status: "hata", message: err.message });
     }
 };
 
-// Gereksinim 6: Barkod Sorgulama (YENİ EKLE!)
-const getProductByBarcode = async (req, res) => {
-    try {
-        const { barcode } = req.params; 
-        const product = await Product.findOne({ barcode: barcode });
-        
-        // Sadece product'ı kontrol et, user burada yok!
-        if (product) { 
-            res.status(200).json({ status: "başarılı", product });
-        } else {
-            res.status(404).json({ status: "hata", message: "Bu barkoda ait ürün bulunamadı!" });
-        }
-    } catch (err) {
-        res.status(400).json({ status: "hata", error: err.message });
-    }
-};
-// Gereksinim 7: Manuel Stok Güncelleme (YENİ EKLE!)
-const updateStock = async (req, res) => {
-    try {
-        const { barcode } = req.params; // Güncellenecek ürünün barkodu URL'den gelir
-        const { newQuantity } = req.body; // Yeni stok miktarı Body'den gelir
-
-        const product = await Product.findOneAndUpdate(
-            { barcode: barcode }, 
-            { stockQuantity: newQuantity }, 
-            { new: true } // Güncellenmiş halini geri döndür
-        );
-
-        if (product) {
-            res.status(200).json({ 
-                status: "başarılı", 
-                message: "Stok miktarı güncellendi!", 
-                product: { name: product.name, stockQuantity: product.stockQuantity } 
-            });
-        } else {
-            res.status(404).json({ status: "hata", message: "Ürün bulunamadı!" });
-        }
-    } catch (err) {
-        res.status(400).json({ status: "hata", error: err.message });
-    }
-};
-// Gereksinim 8: Ürün Silme (YENİ EKLE!)
+// Req 8: Ürün Silme
 const deleteProduct = async (req, res) => {
     try {
-        const { barcode } = req.params; // Silinecek ürünün barkodu URL'den gelir
-
-        const result = await Product.findOneAndDelete({ barcode: barcode });
-
-        if (result) {
-            res.status(200).json({ 
-                status: "başarılı", 
-                message: `${result.name} isimli ürün envanterden silindi!` 
-            });
-        } else {
-            res.status(404).json({ status: "hata", message: "Silinecek ürün bulunamadı!" });
-        }
+        await Product.findOneAndDelete({ barcode: req.params.barcode });
+        res.status(200).json({ status: "başarılı", message: "Ürün silindi" });
     } catch (err) {
-        res.status(400).json({ status: "hata", error: err.message });
+        res.status(400).json({ status: "hata", message: err.message });
     }
 };
-// Gereksinim 9: Satış Kaydı Oluşturma (YENİ EKLE!)
-const makeSale = async (req, res) => {
+
+// --- SATIŞ VE ANALİZ ---
+
+// Req 9: Satış Kaydı (Stoktan düşer)
+const recordSale = async (req, res) => {
     try {
-        const { barcode, quantity } = req.body; // Satılan ürünün barkodu ve adedi
-
-        // 1. Ürünü bul
-        const product = await Product.findOne({ barcode: barcode });
-
-        if (!product) {
-            return res.status(404).json({ status: "hata", message: "Ürün bulunamadı!" });
-        }
-
-        // 2. Stok yeterli mi kontrol et
-        if (product.stockQuantity < quantity) {
+        const { barcode, quantity } = req.body;
+        const product = await Product.findOne({ barcode });
+        if (!product || product.stockQuantity < quantity) {
             return res.status(400).json({ status: "hata", message: "Yetersiz stok!" });
         }
-
-        // 3. Stoğu düş ve güncelle
-        product.stockQuantity -= quantity;
+        product.stockQuantity -= Number(quantity);
         await product.save();
+        res.status(200).json({ status: "başarılı", message: "Satış yapıldı" });
+    } catch (err) {
+        res.status(400).json({ status: "hata", message: err.message });
+    }
+};
 
+// Req 15 & 11: Dashboard Özeti (Kritik Stok Dahil)
+const getDashboardSummary = async (req, res) => {
+    try {
+        const totalProducts = await Product.countDocuments();
+        const criticalAlerts = await Product.countDocuments({ stockQuantity: { $lte: 5 } });
         res.status(200).json({ 
             status: "başarılı", 
-            message: "Satış tamamlandı, stok güncellendi!", 
-            remainingStock: product.stockQuantity,
-            totalPrice: product.sellPrice * quantity 
+            dashboard: { inventoryDiversity: totalProducts, criticalAlerts: criticalAlerts } 
         });
     } catch (err) {
-        res.status(400).json({ status: "hata", error: err.message });
-    }
-};
-// Gereksinim 10: Kategori Yönetimi (YENİ EKLE!)
-const getProductsByCategory = async (req, res) => {
-    try {
-        const { categoryName } = req.params; // Kategori adı URL'den gelir
-
-        // Büyük/küçük harf duyarlılığını ortadan kaldırmak için RegExp kullanıyoruz
-        const products = await Product.find({ 
-            category: { $regex: new RegExp(categoryName, "i") } 
-        });
-
-        if (products.length > 0) {
-            res.status(200).json({ 
-                status: "başarılı", 
-                category: categoryName,
-                count: products.length, 
-                products 
-            });
-        } else {
-            res.status(404).json({ status: "hata", message: "Bu kategoride ürün bulunamadı!" });
-        }
-    } catch (err) {
-        res.status(400).json({ status: "hata", error: err.message });
+        res.status(400).json({ status: "hata", message: err.message });
     }
 };
 
-// Export kısmını son haliyle GÜNCELLE!
-module.exports = { 
-    addProduct, 
-    listAllProducts, 
-    getProductByBarcode, 
-    updateStock, 
-    deleteProduct, 
-    makeSale,
-    getProductsByCategory // Bunu ekledik
-};
-// Gereksinim 11: Kritik Stok Seviyesi Uyarısı (YENİ EKLE!)
-const getCriticalStock = async (req, res) => {
-    try {
-        const limit = 5; // Kritik eşik değeri (5 ve altı)
-        
-        // Stok miktarı 5'ten küçük veya eşit olanları bul ($lte = Less Than or Equal)
-        const criticalProducts = await Product.find({ 
-            stockQuantity: { $lte: limit } 
-        });
-
-        res.status(200).json({ 
-            status: "başarılı", 
-            alert: "Aşağıdaki ürünlerin stoğu kritik seviyededir!",
-            count: criticalProducts.length, 
-            products: criticalProducts 
-        });
-    } catch (err) {
-        res.status(500).json({ status: "hata", error: err.message });
-    }
-};
-
-// Export kısmını son haliyle GÜNCELLE!
-module.exports = { 
-    addProduct, 
-    listAllProducts, 
-    getProductByBarcode, 
-    updateStock, 
-    deleteProduct, 
-    makeSale,
-    getProductsByCategory,
-    getCriticalStock // Bunu ekledik
-};
-// Gereksinim 12: Toplam Envanter Değeri (YENİ EKLE!)
+// Req 12: Finansal Özet (Envanter Değeri)
 const getInventoryValue = async (req, res) => {
     try {
         const products = await Product.find();
-        
-        let totalBuyValue = 0;
-        let totalSellValue = 0;
-
-        products.forEach(p => {
-            totalBuyValue += (p.buyPrice * p.stockQuantity);
-            totalSellValue += (p.sellPrice * p.stockQuantity);
-        });
-
-        res.status(200).json({ 
-            status: "başarılı", 
-            summary: {
-                totalProductCount: products.length,
-                totalInventoryCost: totalBuyValue, // Toplam alış maliyeti
-                potentialTotalRevenue: totalSellValue, // Toplam satış değeri
-                expectedProfit: totalSellValue - totalBuyValue // Beklenen toplam kar
-            }
-        });
+        let totalValue = 0;
+        products.forEach(p => { totalValue += (p.sellPrice * p.stockQuantity); });
+        res.status(200).json({ status: "başarılı", summary: { potentialTotalRevenue: totalValue } });
     } catch (err) {
-        res.status(500).json({ status: "hata", error: err.message });
+        res.status(400).json({ status: "hata", message: err.message });
     }
 };
 
-// Export kısmını son haliyle GÜNCELLE!
-module.exports = { 
-    addProduct, 
-    listAllProducts, 
-    getProductByBarcode, 
-    updateStock, 
-    deleteProduct, 
-    makeSale,
-    getProductsByCategory,
-    getCriticalStock,
-    getInventoryValue // Bunu ekledik
-};
-// Gereksinim 13: Veri Yedekleme Formatı (YENİ EKLE!)
-const exportBackup = async (req, res) => {
+// Req 14: En Son Eklenen 5 Ürün
+const getLastProducts = async (req, res) => {
     try {
-        const products = await Product.find();
-        
-        // Veriyi yedekleme formatına uygun hale getiriyoruz
-        const backupData = {
-            exportDate: new Date(),
-            version: "1.0",
-            totalRecords: products.length,
-            data: products
-        };
-
-        // JSON formatında temiz bir çıktı veriyoruz
-        res.status(200).json(backupData);
+        const lastProducts = await Product.find().sort({ _id: -1 }).limit(5);
+        res.status(200).json({ status: "başarılı", products: lastProducts });
     } catch (err) {
-        res.status(500).json({ status: "hata", error: err.message });
+        res.status(400).json({ status: "hata", message: err.message });
     }
 };
 
-// Export kısmını son haliyle GÜNCELLE!
-module.exports = { 
-    addProduct, 
-    listAllProducts, 
-    getProductByBarcode, 
-    updateStock, 
-    deleteProduct, 
-    makeSale,
-    getProductsByCategory,
-    getCriticalStock,
-    getInventoryValue,
-    exportBackup // Bunu ekledik
-};
-// Gereksinim 14: En Son Eklenen 5 Ürün (YENİ EKLE!)
-const getRecentProducts = async (req, res) => {
+// Req 13: Yedekleme (Tüm veriyi JSON olarak döner)
+const getBackup = async (req, res) => {
     try {
-        // addedDate'e göre tersten sırala (-1), ilk 5 tanesini al (limit)
-        const recentProducts = await Product.find()
-            .sort({ addedDate: -1 }) 
-            .limit(5);
-
-        res.status(200).json({ 
-            status: "başarılı", 
-            count: recentProducts.length, 
-            products: recentProducts 
-        });
+        const allData = await Product.find();
+        res.status(200).json({ status: "başarılı", backup: allData, date: new Date() });
     } catch (err) {
-        res.status(500).json({ status: "hata", error: err.message });
+        res.status(400).json({ status: "hata", message: err.message });
     }
 };
 
-// Export kısmını son haliyle GÜNCELLE! (Son eklenen: getRecentProducts)
-module.exports = { 
-    addProduct, 
-    listAllProducts, 
-    getProductByBarcode, 
-    updateStock, 
-    deleteProduct, 
-    makeSale,
-    getProductsByCategory,
-    getCriticalStock,
-    getInventoryValue,
-    exportBackup,
-    getRecentProducts // Bunu ekledik
+// --- DIŞA AKTARMA ---
+module.exports = {
+    getProducts, addProduct, updateProduct, deleteProduct,
+    recordSale, getDashboardSummary, getInventoryValue,
+    getLastProducts, getBackup
 };
-// Gereksinim 15: Genel Sistem Özeti (FİNAL!)
-const getDashboardSummary = async (req, res) => {
-    try {
-        const User = mongoose.model('User'); // Kullanıcı sayısını saymak için
-        
-        const userCount = await User.countDocuments(); // Toplam kullanıcı sayısı
-        const productCount = await Product.countDocuments(); // Toplam ürün çeşidi
-        const criticalCount = await Product.countDocuments({ stockQuantity: { $lte: 5 } }); // Kritik stok sayısı
-        
-        // En pahalı ürünü bulalım (Ekstra Dashboard zenginliği)
-        const mostExpensiveProduct = await Product.findOne().sort({ sellPrice: -1 });
-
-        res.status(200).json({ 
-            status: "başarılı", 
-            dashboard: {
-                systemUsers: userCount,
-                inventoryDiversity: productCount,
-                criticalAlerts: criticalCount,
-                topProduct: mostExpensiveProduct ? mostExpensiveProduct.name : "Yok",
-                systemStatus: "Aktif / Stabil",
-                lastUpdate: new Date()
-            }
-        });
-    } catch (err) {
-        res.status(500).json({ status: "hata", error: err.message });
-    }
-};
-
-// EXPORT KISMINI SON HALİYLE TAMAMLA! 🚀
-module.exports = { 
-    addProduct, 
-    listAllProducts, 
-    getProductByBarcode, 
-    updateStock, 
-    deleteProduct, 
-    makeSale,
-    getProductsByCategory,
-    getCriticalStock,
-    getInventoryValue,
-    exportBackup,
-    getRecentProducts,
-    getDashboardSummary // VE FİNAL!
-};
-// Export kısmını son haliyle güncelle!
-module.exports = { addProduct, listAllProducts, getProductByBarcode, updateStock, deleteProduct, makeSale, getProductsByCategory, getCriticalStock, getInventoryValue, exportBackup, getRecentProducts, getDashboardSummary };
-

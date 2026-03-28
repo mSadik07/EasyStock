@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <title>EasyStock | Profilim</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Segoe UI', sans-serif; }
+        body { background: #f0f2f5; display: flex; align-items: center; justify-content: center; height: 100vh; }
+        .card { background: white; padding: 40px; border-radius: 20px; box-shadow: 0 10px 25px rgba(0,0,0,0.1); width: 420px; text-align: center; }
+        .card h2 { margin-bottom: 25px; color: #2c3e50; }
+        input { width: 100%; padding: 14px; border: 1px solid #ddd; border-radius: 10px; margin-bottom: 15px; outline: none; }
+        .btn-update { width: 100%; background: #3498db; color: white; border: none; padding: 15px; border-radius: 10px; cursor: pointer; font-weight: bold; font-size: 16px; }
+        .btn-back { display: block; margin-top: 25px; color: #3498db; text-decoration: none; font-weight: 600; }
+    </style>
+</head>
+<body>
+    <div class="card">
+        <h2>👤 Profil Düzenle</h2>
+        <p id="emailDisplay" style="color: #95a5a6; margin-bottom: 25px;"></p>
+        <form id="updateForm">
+            <input type="text" id="newName" placeholder="Yeni Ad Soyad" required>
+            <input type="password" id="newPass" placeholder="Yeni Şifre (Değişmeyecekse boş bırak)">
+            <button type="submit" class="btn-update">Bilgileri Güncelle</button>
+        </form>
+        <a href="index.html" class="btn-back">← Dashboard'a Geri Dön</a>
+    </div>
+
+    <script>
+        const API = "http://localhost:9000/api";
+        const user = JSON.parse(localStorage.getItem('user'));
+        if(!user) window.location.href = "login.html";
+
+        document.getElementById('emailDisplay').innerText = `Kayıtlı E-posta: ${user.email}`;
+        document.getElementById('newName').value = user.name;
+
+        document.getElementById('updateForm').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const data = { name: document.getElementById('newName').value, password: document.getElementById('newPass').value };
+            const res = await fetch(`${API}/users/${user.email}`, {
+                method: 'PUT',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(data)
+            });
+            if(res.ok) {
+                const result = await res.json();
+                localStorage.setItem('user', JSON.stringify(result.user));
+                alert("Profil güncellendi kral!");
+            } else { alert("Güncelleme başarısız!"); }
+        });
+    </script>
+</body>
+</html>

@@ -24,11 +24,13 @@ services:
     build: ./easystock-frontend
     container_name: easystock_front_kapsayici
     ports:
-      - "3000:3000"
+      - "3000:80" # Bilgisayardaki 3000 -> Docker içindeki 80
     depends_on:
       - backend
     networks:
       - easystock-network
+    volumes:
+      - ./easystock-frontend:/usr/share/nginx/html # Bilgisayardaki değişimi anında Docker'a iletir
 
 networks:
   easystock-network:

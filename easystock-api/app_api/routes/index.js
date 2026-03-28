@@ -1,24 +1,21 @@
 const express = require('express');
 const router = express.Router();
-const ctrlAuth = require('../controllers/AuthController');
 const ctrlProduct = require('../controllers/ProductController');
+const ctrlAuth = require('../controllers/AuthController');
 
-// Kullanıcı Yolları (Gereksinim 1, 2, 3)
+// --- ÜRÜN & ANALİZ ROTALARI ---
+router.get('/products', ctrlProduct.getProducts);
+router.post('/products', ctrlProduct.addProduct);
+router.put('/products/:barcode', ctrlProduct.updateProduct);
+router.delete('/products/:barcode', ctrlProduct.deleteProduct);
+router.post('/sales', ctrlProduct.recordSale);
+router.get('/system/dashboard', ctrlProduct.getDashboardSummary);
+router.get('/analysis/inventory-value', ctrlProduct.getInventoryValue);
+router.get('/system/backup', ctrlProduct.getBackup);
+
+// --- KULLANICI ROTALARI ---
 router.post('/register', ctrlAuth.register);
 router.post('/login', ctrlAuth.login);
-router.put('/profile/:userId', ctrlAuth.updateProfile);
+router.put('/users/:email', ctrlAuth.updateUser); // Profil Güncelleme Kapısı
 
-// Ürün Yolları
-router.post('/products', ctrlProduct.addProduct);           // Gereksinim 4
-router.get('/products', ctrlProduct.listAllProducts);      // Gereksinim 5
-router.get('/products/:barcode', ctrlProduct.getProductByBarcode); // Gereksinim 6 
-router.put('/products/:barcode', ctrlProduct.updateStock);  // Gereksinim 7 
-router.delete('/products/:barcode', ctrlProduct.deleteProduct); // Gereksinim 8 
-router.post('/sales', ctrlProduct.makeSale); // Gereksinim 9 
-router.get('/category/:categoryName', ctrlProduct.getProductsByCategory); // Gereksinim 10
-router.get('/alerts/critical-stock', ctrlProduct.getCriticalStock); // Gereksinim 11
-router.get('/analysis/inventory-value', ctrlProduct.getInventoryValue); // Gereksinim 12
-router.get('/system/backup', ctrlProduct.exportBackup); // Gereksinim 13
-router.get('/reports/recent', ctrlProduct.getRecentProducts); // Gereksinim 14
-router.get('/system/dashboard', ctrlProduct.getDashboardSummary); // Gereksinim 15
 module.exports = router;
