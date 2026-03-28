@@ -1,17 +1,15 @@
 const mongoose = require('mongoose');
 const User = mongoose.model('User');
 
-// Gereksinim 1: Üye Kayıt
 const register = async (req, res) => {
     try {
         const user = await User.create(req.body);
-        res.status(201).json({ status: "başarılı", user: { email: user.email } });
+        res.status(201).json({ status: "başarılı", user: { email: user.email, id: user._id } });
     } catch (err) {
         res.status(400).json({ status: "hata", message: err.message });
     }
 };
 
-// Gereksinim 2: Giriş Yapma
 const login = async (req, res) => {
     try {
         const { email, password } = req.body;
@@ -26,20 +24,12 @@ const login = async (req, res) => {
     }
 };
 
-// Gereksinim 3: Profil Güncelleme (YENİ!)
 const updateProfile = async (req, res) => {
     try {
-        const { userId } = req.params; // Güncellenecek kullanıcının ID'si URL'den gelir
-        const updatedData = req.body; // Yeni bilgiler Body'den gelir
-
-        const user = await User.findByIdAndUpdate(userId, updatedData, { new: true });
-        
+        const { userId } = req.params;
+        const user = await User.findByIdAndUpdate(userId, req.body, { new: true });
         if (user) {
-            res.status(200).json({ 
-                status: "başarılı", 
-                message: "Profil güncellendi!", 
-                user: { firstName: user.firstName, businessName: user.businessName } 
-            });
+            res.status(200).json({ status: "başarılı", message: "Profil güncellendi", user });
         } else {
             res.status(404).json({ status: "hata", message: "Kullanıcı bulunamadı" });
         }

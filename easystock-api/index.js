@@ -6,15 +6,17 @@ const port = 9000;
 app.use(express.json());
 
 mongoose.connect('mongodb://db:27017/EasyStockDB')
-    .then(() => console.log("✅ MongoDB Bağlantısı Tamam"))
-    .catch(err => console.log("❌ DB Hatası:", err));
+    .then(() => console.log("✅ MongoDB Bağlantısı Başarılı"))
+    .catch(err => console.log("❌ MongoDB Hatası:", err));
 
-// Klasör isimlerine dikkat!
+// Modelleri Kaydet (Sıralama önemli)
 require('./app_api/models/User');
-const apiRoutes = require('./app_api/routes/index');
+require('./app_api/models/Product');
 
+// Rotaları Bağla
+const apiRoutes = require('./app_api/routes/index');
 app.use('/api', apiRoutes);
 
 app.listen(port, () => {
-    console.log(`🚀 EasyStock API ${port} portunda ateşlendi!`);
+    console.log(`🚀 EasyStock API http://localhost:${port} adresinde hazır!`);
 });
