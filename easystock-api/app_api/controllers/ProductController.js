@@ -41,7 +41,33 @@ const getProductByBarcode = async (req, res) => {
         res.status(400).json({ status: "hata", error: err.message });
     }
 };
+// Gereksinim 7: Manuel Stok Güncelleme (YENİ EKLE!)
+const updateStock = async (req, res) => {
+    try {
+        const { barcode } = req.params; // Güncellenecek ürünün barkodu URL'den gelir
+        const { newQuantity } = req.body; // Yeni stok miktarı Body'den gelir
 
-// Export kısmına getProductByBarcode ekle!
-module.exports = { addProduct, listAllProducts, getProductByBarcode };
+        const product = await Product.findOneAndUpdate(
+            { barcode: barcode }, 
+            { stockQuantity: newQuantity }, 
+            { new: true } // Güncellenmiş halini geri döndür
+        );
+
+        if (product) {
+            res.status(200).json({ 
+                status: "başarılı", 
+                message: "Stok miktarı güncellendi!", 
+                product: { name: product.name, stockQuantity: product.stockQuantity } 
+            });
+        } else {
+            res.status(404).json({ status: "hata", message: "Ürün bulunamadı!" });
+        }
+    } catch (err) {
+        res.status(400).json({ status: "hata", error: err.message });
+    }
+};
+
+// Export kısmına updateStock ekle!
+module.exports = { addProduct, listAllProducts, getProductByBarcode, updateStock };
+
 
