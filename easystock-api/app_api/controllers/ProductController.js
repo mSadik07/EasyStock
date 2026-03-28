@@ -116,8 +116,43 @@ const makeSale = async (req, res) => {
         res.status(400).json({ status: "hata", error: err.message });
     }
 };
+// Gereksinim 10: Kategori Yönetimi (YENİ EKLE!)
+const getProductsByCategory = async (req, res) => {
+    try {
+        const { categoryName } = req.params; // Kategori adı URL'den gelir
+
+        // Büyük/küçük harf duyarlılığını ortadan kaldırmak için RegExp kullanıyoruz
+        const products = await Product.find({ 
+            category: { $regex: new RegExp(categoryName, "i") } 
+        });
+
+        if (products.length > 0) {
+            res.status(200).json({ 
+                status: "başarılı", 
+                category: categoryName,
+                count: products.length, 
+                products 
+            });
+        } else {
+            res.status(404).json({ status: "hata", message: "Bu kategoride ürün bulunamadı!" });
+        }
+    } catch (err) {
+        res.status(400).json({ status: "hata", error: err.message });
+    }
+};
+
+// Export kısmını son haliyle GÜNCELLE!
+module.exports = { 
+    addProduct, 
+    listAllProducts, 
+    getProductByBarcode, 
+    updateStock, 
+    deleteProduct, 
+    makeSale,
+    getProductsByCategory // Bunu ekledik
+};
 
 // Export kısmını son haliyle güncelle!
-module.exports = { addProduct, listAllProducts, getProductByBarcode, updateStock, deleteProduct, makeSale };
+module.exports = { addProduct, listAllProducts, getProductByBarcode, updateStock, deleteProduct, makeSale, getProductsByCategory };
 
 
