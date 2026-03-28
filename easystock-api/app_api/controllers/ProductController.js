@@ -287,7 +287,49 @@ module.exports = {
     exportBackup,
     getRecentProducts // Bunu ekledik
 };
+// Gereksinim 15: Genel Sistem Özeti (FİNAL!)
+const getDashboardSummary = async (req, res) => {
+    try {
+        const User = mongoose.model('User'); // Kullanıcı sayısını saymak için
+        
+        const userCount = await User.countDocuments(); // Toplam kullanıcı sayısı
+        const productCount = await Product.countDocuments(); // Toplam ürün çeşidi
+        const criticalCount = await Product.countDocuments({ stockQuantity: { $lte: 5 } }); // Kritik stok sayısı
+        
+        // En pahalı ürünü bulalım (Ekstra Dashboard zenginliği)
+        const mostExpensiveProduct = await Product.findOne().sort({ sellPrice: -1 });
 
+        res.status(200).json({ 
+            status: "başarılı", 
+            dashboard: {
+                systemUsers: userCount,
+                inventoryDiversity: productCount,
+                criticalAlerts: criticalCount,
+                topProduct: mostExpensiveProduct ? mostExpensiveProduct.name : "Yok",
+                systemStatus: "Aktif / Stabil",
+                lastUpdate: new Date()
+            }
+        });
+    } catch (err) {
+        res.status(500).json({ status: "hata", error: err.message });
+    }
+};
+
+// EXPORT KISMINI SON HALİYLE TAMAMLA! 🚀
+module.exports = { 
+    addProduct, 
+    listAllProducts, 
+    getProductByBarcode, 
+    updateStock, 
+    deleteProduct, 
+    makeSale,
+    getProductsByCategory,
+    getCriticalStock,
+    getInventoryValue,
+    exportBackup,
+    getRecentProducts,
+    getDashboardSummary // VE FİNAL!
+};
 // Export kısmını son haliyle güncelle!
-module.exports = { addProduct, listAllProducts, getProductByBarcode, updateStock, deleteProduct, makeSale, getProductsByCategory, getCriticalStock, getInventoryValue, exportBackup, getRecentProducts };
+module.exports = { addProduct, listAllProducts, getProductByBarcode, updateStock, deleteProduct, makeSale, getProductsByCategory, getCriticalStock, getInventoryValue, exportBackup, getRecentProducts, getDashboardSummary };
 

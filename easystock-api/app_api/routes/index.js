@@ -20,4 +20,5 @@ router.get('/alerts/critical-stock', ctrlProduct.getCriticalStock); // Gereksini
 router.get('/analysis/inventory-value', ctrlProduct.getInventoryValue); // Gereksinim 12
 router.get('/system/backup', ctrlProduct.exportBackup); // Gereksinim 13
 router.get('/reports/recent', ctrlProduct.getRecentProducts); // Gereksinim 14
+router.get('/system/dashboard', ctrlProduct.getDashboardSummary); // Gereksinim 15
 module.exports = router;
