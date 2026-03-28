@@ -17,4 +17,5 @@ router.delete('/products/:barcode', ctrlProduct.deleteProduct); // Gereksinim 8
 router.post('/sales', ctrlProduct.makeSale); // Gereksinim 9 
 router.get('/category/:categoryName', ctrlProduct.getProductsByCategory); // Gereksinim 10
 router.get('/alerts/critical-stock', ctrlProduct.getCriticalStock); // Gereksinim 11
+router.get('/analysis/inventory-value', ctrlProduct.getInventoryValue); // Gereksinim 12
 module.exports = router;

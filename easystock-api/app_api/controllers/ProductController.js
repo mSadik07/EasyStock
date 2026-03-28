@@ -183,7 +183,46 @@ module.exports = {
     getProductsByCategory,
     getCriticalStock // Bunu ekledik
 };
+// Gereksinim 12: Toplam Envanter Değeri (YENİ EKLE!)
+const getInventoryValue = async (req, res) => {
+    try {
+        const products = await Product.find();
+        
+        let totalBuyValue = 0;
+        let totalSellValue = 0;
+
+        products.forEach(p => {
+            totalBuyValue += (p.buyPrice * p.stockQuantity);
+            totalSellValue += (p.sellPrice * p.stockQuantity);
+        });
+
+        res.status(200).json({ 
+            status: "başarılı", 
+            summary: {
+                totalProductCount: products.length,
+                totalInventoryCost: totalBuyValue, // Toplam alış maliyeti
+                potentialTotalRevenue: totalSellValue, // Toplam satış değeri
+                expectedProfit: totalSellValue - totalBuyValue // Beklenen toplam kar
+            }
+        });
+    } catch (err) {
+        res.status(500).json({ status: "hata", error: err.message });
+    }
+};
+
+// Export kısmını son haliyle GÜNCELLE!
+module.exports = { 
+    addProduct, 
+    listAllProducts, 
+    getProductByBarcode, 
+    updateStock, 
+    deleteProduct, 
+    makeSale,
+    getProductsByCategory,
+    getCriticalStock,
+    getInventoryValue // Bunu ekledik
+};
 
 // Export kısmını son haliyle güncelle!
-module.exports = { addProduct, listAllProducts, getProductByBarcode, updateStock, deleteProduct, makeSale, getProductsByCategory, getCriticalStock };
+module.exports = { addProduct, listAllProducts, getProductByBarcode, updateStock, deleteProduct, makeSale, getProductsByCategory, getCriticalStock, getInventoryValue };
 
