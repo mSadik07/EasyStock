@@ -13,4 +13,5 @@ router.post('/products', ctrlProduct.addProduct);           // Gereksinim 4
 router.get('/products', ctrlProduct.listAllProducts);      // Gereksinim 5
 router.get('/products/:barcode', ctrlProduct.getProductByBarcode); // Gereksinim 6 (YENİ EKLE!)
 router.put('/products/:barcode', ctrlProduct.updateStock);  // Gereksinim 7 (YENİ EKLE!)
+router.delete('/products/:barcode', ctrlProduct.deleteProduct); // Gereksinim 8 (YENİ EKLE!)
 module.exports = router;

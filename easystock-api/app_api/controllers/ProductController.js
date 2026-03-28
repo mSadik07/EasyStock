@@ -66,8 +66,28 @@ const updateStock = async (req, res) => {
         res.status(400).json({ status: "hata", error: err.message });
     }
 };
+// Gereksinim 8: Ürün Silme (YENİ EKLE!)
+const deleteProduct = async (req, res) => {
+    try {
+        const { barcode } = req.params; // Silinecek ürünün barkodu URL'den gelir
 
-// Export kısmına updateStock ekle!
-module.exports = { addProduct, listAllProducts, getProductByBarcode, updateStock };
+        const result = await Product.findOneAndDelete({ barcode: barcode });
+
+        if (result) {
+            res.status(200).json({ 
+                status: "başarılı", 
+                message: `${result.name} isimli ürün envanterden silindi!` 
+            });
+        } else {
+            res.status(404).json({ status: "hata", message: "Silinecek ürün bulunamadı!" });
+        }
+    } catch (err) {
+        res.status(400).json({ status: "hata", error: err.message });
+    }
+};
+
+// Export kısmını son haliyle güncelle!
+module.exports = { addProduct, listAllProducts, getProductByBarcode, updateStock, deleteProduct };
+
 
 
