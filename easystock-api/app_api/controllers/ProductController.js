@@ -222,7 +222,40 @@ module.exports = {
     getCriticalStock,
     getInventoryValue // Bunu ekledik
 };
+// Gereksinim 13: Veri Yedekleme Formatı (YENİ EKLE!)
+const exportBackup = async (req, res) => {
+    try {
+        const products = await Product.find();
+        
+        // Veriyi yedekleme formatına uygun hale getiriyoruz
+        const backupData = {
+            exportDate: new Date(),
+            version: "1.0",
+            totalRecords: products.length,
+            data: products
+        };
+
+        // JSON formatında temiz bir çıktı veriyoruz
+        res.status(200).json(backupData);
+    } catch (err) {
+        res.status(500).json({ status: "hata", error: err.message });
+    }
+};
+
+// Export kısmını son haliyle GÜNCELLE!
+module.exports = { 
+    addProduct, 
+    listAllProducts, 
+    getProductByBarcode, 
+    updateStock, 
+    deleteProduct, 
+    makeSale,
+    getProductsByCategory,
+    getCriticalStock,
+    getInventoryValue,
+    exportBackup // Bunu ekledik
+};
 
 // Export kısmını son haliyle güncelle!
-module.exports = { addProduct, listAllProducts, getProductByBarcode, updateStock, deleteProduct, makeSale, getProductsByCategory, getCriticalStock, getInventoryValue };
+module.exports = { addProduct, listAllProducts, getProductByBarcode, updateStock, deleteProduct, makeSale, getProductsByCategory, getCriticalStock, getInventoryValue, exportBackup };
 

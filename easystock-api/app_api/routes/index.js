@@ -18,4 +18,5 @@ router.post('/sales', ctrlProduct.makeSale); // Gereksinim 9
 router.get('/category/:categoryName', ctrlProduct.getProductsByCategory); // Gereksinim 10
 router.get('/alerts/critical-stock', ctrlProduct.getCriticalStock); // Gereksinim 11
 router.get('/analysis/inventory-value', ctrlProduct.getInventoryValue); // Gereksinim 12
+router.get('/system/backup', ctrlProduct.exportBackup); // Gereksinim 13
 module.exports = router;
