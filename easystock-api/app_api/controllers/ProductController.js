@@ -255,7 +255,39 @@ module.exports = {
     getInventoryValue,
     exportBackup // Bunu ekledik
 };
+// Gereksinim 14: En Son Eklenen 5 Ürün (YENİ EKLE!)
+const getRecentProducts = async (req, res) => {
+    try {
+        // addedDate'e göre tersten sırala (-1), ilk 5 tanesini al (limit)
+        const recentProducts = await Product.find()
+            .sort({ addedDate: -1 }) 
+            .limit(5);
+
+        res.status(200).json({ 
+            status: "başarılı", 
+            count: recentProducts.length, 
+            products: recentProducts 
+        });
+    } catch (err) {
+        res.status(500).json({ status: "hata", error: err.message });
+    }
+};
+
+// Export kısmını son haliyle GÜNCELLE! (Son eklenen: getRecentProducts)
+module.exports = { 
+    addProduct, 
+    listAllProducts, 
+    getProductByBarcode, 
+    updateStock, 
+    deleteProduct, 
+    makeSale,
+    getProductsByCategory,
+    getCriticalStock,
+    getInventoryValue,
+    exportBackup,
+    getRecentProducts // Bunu ekledik
+};
 
 // Export kısmını son haliyle güncelle!
-module.exports = { addProduct, listAllProducts, getProductByBarcode, updateStock, deleteProduct, makeSale, getProductsByCategory, getCriticalStock, getInventoryValue, exportBackup };
+module.exports = { addProduct, listAllProducts, getProductByBarcode, updateStock, deleteProduct, makeSale, getProductsByCategory, getCriticalStock, getInventoryValue, exportBackup, getRecentProducts };
 
