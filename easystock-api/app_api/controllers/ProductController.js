@@ -151,8 +151,39 @@ module.exports = {
     makeSale,
     getProductsByCategory // Bunu ekledik
 };
+// Gereksinim 11: Kritik Stok Seviyesi Uyarısı (YENİ EKLE!)
+const getCriticalStock = async (req, res) => {
+    try {
+        const limit = 5; // Kritik eşik değeri (5 ve altı)
+        
+        // Stok miktarı 5'ten küçük veya eşit olanları bul ($lte = Less Than or Equal)
+        const criticalProducts = await Product.find({ 
+            stockQuantity: { $lte: limit } 
+        });
+
+        res.status(200).json({ 
+            status: "başarılı", 
+            alert: "Aşağıdaki ürünlerin stoğu kritik seviyededir!",
+            count: criticalProducts.length, 
+            products: criticalProducts 
+        });
+    } catch (err) {
+        res.status(500).json({ status: "hata", error: err.message });
+    }
+};
+
+// Export kısmını son haliyle GÜNCELLE!
+module.exports = { 
+    addProduct, 
+    listAllProducts, 
+    getProductByBarcode, 
+    updateStock, 
+    deleteProduct, 
+    makeSale,
+    getProductsByCategory,
+    getCriticalStock // Bunu ekledik
+};
 
 // Export kısmını son haliyle güncelle!
-module.exports = { addProduct, listAllProducts, getProductByBarcode, updateStock, deleteProduct, makeSale, getProductsByCategory };
-
+module.exports = { addProduct, listAllProducts, getProductByBarcode, updateStock, deleteProduct, makeSale, getProductsByCategory, getCriticalStock };
 
