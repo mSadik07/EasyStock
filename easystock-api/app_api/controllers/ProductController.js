@@ -25,5 +25,23 @@ const listAllProducts = async (req, res) => {
     }
 };
 
-// Export kısmına listAllProducts eklemeyi unutma!
-module.exports = { addProduct, listAllProducts };
+// Gereksinim 6: Barkod Sorgulama (YENİ EKLE!)
+const getProductByBarcode = async (req, res) => {
+    try {
+        const { barcode } = req.params; 
+        const product = await Product.findOne({ barcode: barcode });
+        
+        // Sadece product'ı kontrol et, user burada yok!
+        if (product) { 
+            res.status(200).json({ status: "başarılı", product });
+        } else {
+            res.status(404).json({ status: "hata", message: "Bu barkoda ait ürün bulunamadı!" });
+        }
+    } catch (err) {
+        res.status(400).json({ status: "hata", error: err.message });
+    }
+};
+
+// Export kısmına getProductByBarcode ekle!
+module.exports = { addProduct, listAllProducts, getProductByBarcode };
+

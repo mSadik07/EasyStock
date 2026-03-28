@@ -9,7 +9,7 @@ router.post('/login', ctrlAuth.login);
 router.put('/profile/:userId', ctrlAuth.updateProfile);
 
 // Ürün Yolları
-router.post('/products', ctrlProduct.addProduct); // Gereksinim 4
-router.get('/products', ctrlProduct.listAllProducts); // Gereksinim 5 (YENİ EKLE!)
-
+router.post('/products', ctrlProduct.addProduct);           // Gereksinim 4
+router.get('/products', ctrlProduct.listAllProducts);      // Gereksinim 5
+router.get('/products/:barcode', ctrlProduct.getProductByBarcode); // Gereksinim 6 (YENİ EKLE!)
 module.exports = router;
