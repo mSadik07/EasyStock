@@ -85,9 +85,39 @@ const deleteProduct = async (req, res) => {
         res.status(400).json({ status: "hata", error: err.message });
     }
 };
+// Gereksinim 9: Satış Kaydı Oluşturma (YENİ EKLE!)
+const makeSale = async (req, res) => {
+    try {
+        const { barcode, quantity } = req.body; // Satılan ürünün barkodu ve adedi
+
+        // 1. Ürünü bul
+        const product = await Product.findOne({ barcode: barcode });
+
+        if (!product) {
+            return res.status(404).json({ status: "hata", message: "Ürün bulunamadı!" });
+        }
+
+        // 2. Stok yeterli mi kontrol et
+        if (product.stockQuantity < quantity) {
+            return res.status(400).json({ status: "hata", message: "Yetersiz stok!" });
+        }
+
+        // 3. Stoğu düş ve güncelle
+        product.stockQuantity -= quantity;
+        await product.save();
+
+        res.status(200).json({ 
+            status: "başarılı", 
+            message: "Satış tamamlandı, stok güncellendi!", 
+            remainingStock: product.stockQuantity,
+            totalPrice: product.sellPrice * quantity 
+        });
+    } catch (err) {
+        res.status(400).json({ status: "hata", error: err.message });
+    }
+};
 
 // Export kısmını son haliyle güncelle!
-module.exports = { addProduct, listAllProducts, getProductByBarcode, updateStock, deleteProduct };
-
+module.exports = { addProduct, listAllProducts, getProductByBarcode, updateStock, deleteProduct, makeSale };
 
 
