@@ -1,5 +1,6 @@
 const mongoose = require('mongoose');
 const Product = mongoose.model('Product');
+const Sale = mongoose.model('Sale');
 
 // --- ÜRÜN İŞLEMLERİ ---
 
@@ -58,15 +59,27 @@ const recordSale = async (req, res) => {
     try {
         const { barcode, quantity } = req.body;
         const product = await Product.findOne({ barcode });
+
         if (!product || product.stockQuantity < quantity) {
             return res.status(400).json({ status: "hata", message: "Yetersiz stok!" });
         }
+
+        const salePrice = product.sellPrice * quantity;
+
+        // 1. Stoğu düş
         product.stockQuantity -= Number(quantity);
         await product.save();
-        res.status(200).json({ status: "başarılı", message: "Satış yapıldı" });
-    } catch (err) {
-        res.status(400).json({ status: "hata", message: err.message });
-    }
+
+        // 2. Satış Geçmişine Yaz (YENİ!)
+        await Sale.create({
+            productBarcode: barcode,
+            productName: product.name,
+            quantity: quantity,
+            totalPrice: salePrice
+        });
+
+        res.status(200).json({ status: "başarılı", message: "Satış başarıyla kaydedildi!" });
+    } catch (err) { res.status(400).json({ status: "hata", message: err.message }); }
 };
 
 // Req 15 & 11: Dashboard Özeti (Kritik Stok Dahil)
@@ -114,10 +127,30 @@ const getBackup = async (req, res) => {
         res.status(400).json({ status: "hata", message: err.message });
     }
 };
+const getSalesReport = async (req, res) => {
+    try {
+        const sales = await Sale.find().sort({ saleDate: -1 }); // En yeniden eskiye
+        
+        // Özet Veriler
+        let totalRevenue = 0;
+        let totalItemsSold = 0;
+        sales.forEach(s => {
+            totalRevenue += s.totalPrice;
+            totalItemsSold += s.quantity;
+        });
+
+        res.status(200).json({ 
+            status: "başarılı", 
+            sales, 
+            summary: { totalRevenue, totalItemsSold } 
+        });
+    } catch (err) { res.status(400).json({ status: "hata", message: err.message }); }
+};
+
 
 // --- DIŞA AKTARMA ---
 module.exports = {
     getProducts, addProduct, updateProduct, deleteProduct,
     recordSale, getDashboardSummary, getInventoryValue,
-    getLastProducts, getBackup
+    getLastProducts, getBackup, getSalesReport
 };

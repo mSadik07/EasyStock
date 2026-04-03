@@ -20,58 +20,41 @@
         * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Inter', sans-serif; }
         body { display: flex; background: var(--bg); color: var(--text-main); height: 100vh; overflow: hidden; }
 
-        /* SIDEBAR MODERNİZE */
-        .sidebar { width: 280px; background: var(--sidebar-bg); color: #fff; padding: 30px 20px; display: flex; flex-direction: column; transition: 0.3s; }
-        .sidebar h2 { font-size: 24px; font-weight: 700; color: var(--success); margin-bottom: 40px; letter-spacing: 1px; display: flex; align-items: center; gap: 10px; }
+        /* SIDEBAR */
+        .sidebar { width: 280px; background: var(--sidebar-bg); color: #fff; padding: 30px 20px; display: flex; flex-direction: column; }
+        .sidebar h2 { font-size: 24px; font-weight: 700; color: var(--success); margin-bottom: 30px; text-align: center; }
         
         .menu-items { flex-grow: 1; }
         .menu-link { 
             padding: 14px 18px; cursor: pointer; border-radius: 12px; margin-bottom: 8px; 
-            transition: all 0.3s ease; display: flex; align-items: center; gap: 12px; color: #a2a3b7; 
+            transition: 0.3s; display: flex; align-items: center; gap: 12px; color: #a2a3b7; text-decoration: none;
         }
-        .menu-link:hover, .menu-link.active { background: rgba(255,255,255,0.05); color: #fff; transform: translateX(5px); }
+        .menu-link:hover, .menu-link.active { background: rgba(255,255,255,0.05); color: #fff; }
         .menu-link.active { border-left: 4px solid var(--primary); background: rgba(67, 97, 238, 0.1); }
 
-        .btn-backup { background: var(--warning); color: #fff; border: none; padding: 12px; width: 100%; border-radius: 12px; cursor: pointer; margin-bottom: 12px; font-weight: 600; transition: 0.3s; }
-        .btn-logout { background: rgba(239, 35, 60, 0.1); color: var(--danger); border: 1px solid var(--danger); padding: 12px; width: 100%; border-radius: 12px; cursor: pointer; font-weight: 600; transition: 0.3s; }
-        .btn-logout:hover { background: var(--danger); color: #fff; }
+        .btn-backup { background: var(--warning); color: #fff; border: none; padding: 12px; width: 100%; border-radius: 12px; cursor: pointer; margin-bottom: 12px; font-weight: 600; }
+        .btn-logout { background: rgba(239, 35, 60, 0.1); color: var(--danger); border: 1px solid var(--danger); padding: 12px; width: 100%; border-radius: 12px; cursor: pointer; font-weight: 600; }
 
         /* ANA İÇERİK */
-        .main { flex: 1; padding: 40px; overflow-y: auto; scroll-behavior: smooth; }
-        h1 { font-size: 28px; font-weight: 700; margin-bottom: 30px; color: #1e1e2d; }
+        .main { flex: 1; padding: 40px; overflow-y: auto; }
+        h1 { font-size: 28px; font-weight: 700; margin-bottom: 30px; }
 
         /* KARTLAR */
-        .card-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 25px; margin-bottom: 40px; }
-        .card { background: #fff; padding: 25px; border-radius: 20px; box-shadow: 0 10px 30px rgba(0,0,0,0.03); text-align: left; transition: 0.3s; border: 1px solid #edf2f7; }
-        .card:hover { transform: translateY(-5px); box-shadow: 0 15px 35px rgba(0,0,0,0.06); }
-        .card h3 { color: #718096; font-size: 13px; text-transform: uppercase; margin-bottom: 15px; letter-spacing: 0.5px; }
-        .card p { font-size: 26px; font-weight: 700; color: #1a202c; }
+        .card-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 25px; margin-bottom: 40px; }
+        .card { background: #fff; padding: 25px; border-radius: 20px; box-shadow: 0 10px 30px rgba(0,0,0,0.03); border: 1px solid #edf2f7; }
+        .card h3 { color: #718096; font-size: 13px; text-transform: uppercase; margin-bottom: 10px; }
+        .card p { font-size: 24px; font-weight: 700; }
 
-        /* FORM BÖLÜMÜ */
+        /* FORM & TABLO */
         .section { background: #fff; padding: 30px; border-radius: 24px; margin-bottom: 35px; box-shadow: 0 10px 30px rgba(0,0,0,0.02); }
-        .section-title { font-size: 18px; font-weight: 700; margin-bottom: 25px; color: #2d3748; }
         .form-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 15px; }
-        input, select { padding: 14px 18px; border: 1px solid #e2e8f0; border-radius: 12px; outline: none; font-size: 14px; transition: 0.3s; background: #f8fafc; }
-        input:focus { border-color: var(--primary); background: #fff; box-shadow: 0 0 0 4px rgba(67, 97, 238, 0.1); }
-        .btn-primary { background: var(--primary); color: #fff; border: none; padding: 15px; border-radius: 12px; cursor: pointer; font-weight: 700; grid-column: span 3; font-size: 16px; transition: 0.3s; }
-        .btn-primary:hover { background: var(--secondary); box-shadow: 0 8px 20px rgba(67, 97, 238, 0.3); }
+        input { padding: 14px; border: 1px solid #e2e8f0; border-radius: 12px; outline: none; background: #f8fafc; }
+        .btn-primary { background: var(--primary); color: #fff; border: none; padding: 15px; border-radius: 12px; cursor: pointer; font-weight: 700; grid-column: span 3; }
 
-        /* TABLO TASARIMI */
-        table { width: 100%; border-collapse: separate; border-spacing: 0 10px; margin-top: -10px; }
-        th { padding: 15px 20px; color: #a0aec0; font-size: 12px; text-transform: uppercase; font-weight: 600; text-align: left; }
-        td { padding: 18px 20px; background: #fff; border-top: 1px solid #f1f5f9; border-bottom: 1px solid #f1f5f9; }
-        td:first-child { border-left: 1px solid #f1f5f9; border-radius: 12px 0 0 12px; }
-        td:last-child { border-right: 1px solid #f1f5f9; border-radius: 0 12px 12px 0; }
-        
-        .action-btns { display: flex; gap: 8px; }
-        .btn-action { border: none; padding: 8px 14px; border-radius: 8px; cursor: pointer; font-size: 11px; font-weight: 700; transition: 0.2s; }
-        .btn-s { background: #e6fffa; color: #234e52; }
-        .btn-e { background: #ebf4ff; color: #2c5282; }
-        .btn-d { background: #fff5f5; color: #9b2c2c; }
-        .btn-action:hover { filter: brightness(0.95); transform: scale(1.05); }
-
-        .critical-badge { background: var(--danger); color: #fff; padding: 4px 10px; border-radius: 20px; font-size: 10px; font-weight: 800; animation: pulse 2s infinite; }
-        @keyframes pulse { 0% { opacity: 1; } 50% { opacity: 0.6; } 100% { opacity: 1; } }
+        table { width: 100%; border-collapse: separate; border-spacing: 0 10px; }
+        th { padding: 15px; color: #a0aec0; font-size: 12px; text-transform: uppercase; text-align: left; }
+        td { padding: 15px; background: #fff; border-top: 1px solid #f1f5f9; border-bottom: 1px solid #f1f5f9; }
+        .critical-badge { background: var(--danger); color: #fff; padding: 4px 8px; border-radius: 5px; font-size: 10px; font-weight: bold; }
     </style>
 </head>
 <body>
@@ -80,8 +63,8 @@
         <h2>📦 EasyStock</h2>
         <nav class="menu-items">
             <div class="menu-link active" onclick="location.reload()">📊 Dashboard</div>
-            <div class="menu-link" onclick="window.location.href='profile.html'">👤 Profil Ayarları</div>
-            <div class="menu-link" onclick="alert('Raporlar Yakında!')">📋 Satış Raporları</div>
+            <div class="menu-link" onclick="window.location.href='profile.html'">👤 Profilim</div>
+            <div class="menu-link" onclick="window.location.href='reports.html'">📋 Satış Raporları</div>
         </nav>
         <button class="btn-backup" onclick="yedekle()">💾 Veri Yedeği Al</button>
         <button class="btn-logout" onclick="cikisYap()">Çıkış Yap</button>
@@ -93,29 +76,28 @@
         <div class="card-grid">
             <div class="card"><h3>Ürün Çeşitliliği</h3><p id="totalCount">0</p></div>
             <div class="card"><h3>Kritik Stok</h3><p id="criticalCount" style="color:var(--danger)">0</p></div>
-            <div class="card"><h3>Toplam Değer</h3><p id="totalValue">0 TL</p></div>
-            <div class="card"><h3>Sistem Durumu</h3><p id="statusText" style="color:var(--success)">Aktif</p></div>
+            <div class="card"><h3>Kasa Değeri</h3><p id="totalValue">0 TL</p></div>
+            <div class="card"><h3>Sistem</h3><p id="statusText" style="color:var(--success)">Aktif ✅</p></div>
         </div>
 
         <section class="section">
-            <h2 class="section-title">Yeni Ürün Girişi</h2>
+            <h2 style="margin-bottom:20px">Yeni Ürün Kaydı</h2>
             <form id="productForm" class="form-grid">
-                <input type="text" id="barcode" placeholder="Barkod No" required>
+                <input type="text" id="barcode" placeholder="Barkod" required>
                 <input type="text" id="pName" placeholder="Ürün İsmi" required>
                 <input type="text" id="pCat" placeholder="Kategori" required>
-                <input type="number" id="pStock" placeholder="Başlangıç Stoğu" required>
-                <input type="number" id="pBuy" placeholder="Alış Fiyatı (TL)" required>
-                <input type="number" id="pSell" placeholder="Satış Fiyatı (TL)" required>
-                <button type="submit" class="btn-primary">Envantere Kaydet</button>
+                <input type="number" id="pStock" placeholder="Stok" required>
+                <input type="number" id="pBuy" placeholder="Alış" required>
+                <input type="number" id="pSell" placeholder="Satış" required>
+                <button type="submit" class="btn-primary">Envantere Ekle</button>
             </form>
         </section>
 
         <section class="section">
-            <h2 class="section-title">Envanter Listesi</h2>
-            <input type="text" id="search" placeholder="Ürün adına göre filtrele..." onkeyup="verileriGetir()" style="width: 100%; margin-bottom: 25px;">
+            <input type="text" id="search" placeholder="Ürün ara..." onkeyup="verileriGetir()" style="width: 100%; padding:15px; border-radius:12px; border:1px solid #ddd; margin-bottom:20px;">
             <table>
                 <thead>
-                    <tr><th>Barkod</th><th>Ürün Adı</th><th>Stok</th><th>Satış Fiyatı</th><th>İşlemler</th></tr>
+                    <tr><th>Barkod</th><th>Ürün</th><th>Stok</th><th>Fiyat</th><th>İşlemler</th></tr>
                 </thead>
                 <tbody id="productTable"></tbody>
             </table>
@@ -139,7 +121,6 @@
                     fetch(`${API}/analysis/inventory-value`),
                     fetch(`${API}/products`)
                 ]);
-                
                 const dData = await dRes.json();
                 const vData = await vRes.json();
                 const pData = await pRes.json();
@@ -157,16 +138,14 @@
                         const isCritical = p.stockQuantity <= 5;
                         table.innerHTML += `
                             <tr>
-                                <td><span style="color:#718096; font-weight:600">#${p.barcode}</span></td>
-                                <td><span style="font-weight:700">${p.name}</span></td>
-                                <td>${p.stockQuantity} Adet ${isCritical ? '<span class="critical-badge">AZALDI</span>' : ''}</td>
-                                <td><b>${p.sellPrice} TL</b></td>
+                                <td>#${p.barcode}</td>
+                                <td><b>${p.name}</b></td>
+                                <td>${p.stockQuantity} ${isCritical ? '<span class="critical-badge">KRİTİK</span>' : ''}</td>
+                                <td>${p.sellPrice} TL</td>
                                 <td>
-                                    <div class="action-btns">
-                                        <button class="btn-action btn-s" onclick="satisYap('${p.barcode}')">SAT</button>
-                                        <button class="btn-action btn-e" onclick="stokEkle('${p.barcode}')">EKLE</button>
-                                        <button class="btn-action btn-d" onclick="urunSil('${p.barcode}')">SİL</button>
-                                    </div>
+                                    <button onclick="satisYap('${p.barcode}')" style="background:#2ecc71; color:white; border:none; padding:5px 10px; border-radius:5px; cursor:pointer">SAT</button>
+                                    <button onclick="stokEkle('${p.barcode}')" style="background:#3498db; color:white; border:none; padding:5px 10px; border-radius:5px; cursor:pointer">EKLE</button>
+                                    <button onclick="urunSil('${p.barcode}')" style="background:#e74c3c; color:white; border:none; padding:5px 10px; border-radius:5px; cursor:pointer">SİL</button>
                                 </td>
                             </tr>`;
                     }
@@ -174,8 +153,7 @@
             } catch(e) {}
         }
 
-        async function urunSil(b) { if(confirm("Ürünü silmek istediğine emin misin kral?")) { await fetch(`${API}/products/${b}`, {method:'DELETE'}); verileriGetir(); } }
-        
+        async function urunSil(b) { if(confirm("Silinsin mi?")) { await fetch(`${API}/products/${b}`, {method:'DELETE'}); verileriGetir(); } }
         async function stokEkle(b) {
             const m = prompt("Eklenecek miktar:");
             if(!m) return;
@@ -186,7 +164,6 @@
             });
             verileriGetir();
         }
-
         async function satisYap(b) {
             const q = prompt("Kaç adet satıldı?");
             if(!q) return;
@@ -197,7 +174,6 @@
             });
             if(res.ok) verileriGetir(); else alert("Stok yetersiz!");
         }
-
         async function yedekle() {
             const res = await fetch(`${API}/system/backup`);
             const data = await res.json();
@@ -207,7 +183,6 @@
             a.download = "EasyStock_Yedek.json";
             a.click();
         }
-
         function cikisYap() { if(confirm("Çıkış yapılsın mı?")) { localStorage.removeItem('user'); window.location.href="login.html"; } }
 
         document.getElementById('productForm').addEventListener('submit', async (e) => {

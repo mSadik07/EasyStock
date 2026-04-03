@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <title>EasyStock | Satış Raporları</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
+    <style>
+        /* Modern tasarım CSS'leri (Dashboard ile aynı stilde) */
+        :root { --primary: #4361ee; --bg: #f8f9fa; }
+        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Inter', sans-serif; }
+        body { background: var(--bg); padding: 40px; }
+        .container { max-width: 1000px; margin: 0 auto; }
+        .header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 30px; }
+        .stats-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; margin-bottom: 40px; }
+        .stat-card { background: white; padding: 25px; border-radius: 20px; box-shadow: 0 10px 30px rgba(0,0,0,0.03); border-top: 5px solid var(--primary); }
+        .stat-card h3 { font-size: 13px; color: #718096; text-transform: uppercase; margin-bottom: 10px; }
+        .stat-card p { font-size: 28px; font-weight: 700; }
+        .table-section { background: white; padding: 30px; border-radius: 24px; box-shadow: 0 10px 30px rgba(0,0,0,0.02); }
+        table { width: 100%; border-collapse: collapse; margin-top: 20px; }
+        th, td { padding: 15px; text-align: left; border-bottom: 1px solid #f1f5f9; }
+        .btn-back { padding: 10px 20px; background: #e2e8f0; border-radius: 10px; text-decoration: none; color: #4a5568; font-weight: 600; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>📊 Satış Raporları</h1>
+            <a href="index.html" class="btn-back">← Dashboard</a>
+        </div>
+
+        <div class="stats-grid">
+            <div class="stat-card"><h3>Toplam Ciro</h3><p id="revText">0 TL</p></div>
+            <div class="stat-card"><h3>Satılan Toplam Ürün</h3><p id="soldText">0 Adet</p></div>
+        </div>
+
+        <div class="table-section">
+            <h2>İşlem Geçmişi</h2>
+            <table>
+                <thead>
+                    <tr><th>Tarih</th><th>Ürün</th><th>Miktar</th><th>Toplam Tutar</th></tr>
+                </thead>
+                <tbody id="salesTable"></tbody>
+            </table>
+        </div>
+    </div>
+
+    <script>
+        const API = "http://localhost:9000/api";
+        async function raporuYukle() {
+            const res = await fetch(`${API}/sales/report`);
+            const data = await res.json();
+            
+            document.getElementById('revText').innerText = data.summary.totalRevenue.toLocaleString() + " TL";
+            document.getElementById('soldText').innerText = data.summary.totalItemsSold + " Adet";
+
+            const table = document.getElementById('salesTable');
+            table.innerHTML = "";
+            data.sales.forEach(s => {
+                const tarih = new Date(s.saleDate).toLocaleString('tr-TR');
+                table.innerHTML += `<tr>
+                    <td>${tarih}</td>
+                    <td><b>${s.productName}</b></td>
+                    <td>${s.quantity} Adet</td>
+                    <td style="color:#2ecc71; font-weight:700">${s.totalPrice} TL</td>
+                </tr>`;
+            });
+        }
+        window.onload = raporuYukle;
+    </script>
+</body>
+</html>

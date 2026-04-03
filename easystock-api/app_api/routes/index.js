@@ -17,5 +17,5 @@ router.get('/system/backup', ctrlProduct.getBackup);
 router.post('/register', ctrlAuth.register);
 router.post('/login', ctrlAuth.login);
 router.put('/users/:email', ctrlAuth.updateUser); // Profil Güncelleme Kapısı
-
+router.get('/sales/report', ctrlProduct.getSalesReport);
 module.exports = router;
