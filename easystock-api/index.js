@@ -7,14 +7,15 @@ const port = 9000;
 app.use(cors()); // 2. Kapıları tüm tarayıcılara açtık
 app.use(express.json());
 
-mongoose.connect('mongodb://db:27017/EasyStockDB')
+mongoose.connect('mongodb://db:27017/easystock')
     .then(() => console.log("✅ MongoDB Bağlantısı Başarılı"))
     .catch(err => console.log("❌ MongoDB Hatası:", err));
 
 // Modeller
 require('./app_api/models/User');
 require('./app_api/models/Product');
-
+require('./app_api/models/Sale');
+require('./app_api/models/Activity');
 // Rotalar
 const apiRoutes = require('./app_api/routes/index');
 app.use('/api', apiRoutes);

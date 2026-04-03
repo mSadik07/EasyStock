@@ -2,138 +2,96 @@ const mongoose = require('mongoose');
 const Product = mongoose.model('Product');
 const Sale = mongoose.model('Sale');
 
-// --- ÜRÜN İŞLEMLERİ ---
-
-// Req 5 & 10: Ürün Listeleme ve Kategori Filtreleme
+// 1. Tüm Ürünleri Getir
 const getProducts = async (req, res) => {
     try {
-        const { category } = req.params;
-        const query = category ? { category: category } : {};
-        const products = await Product.find(query);
+        const products = await Product.find();
         res.status(200).json({ status: "başarılı", products });
-    } catch (err) {
-        res.status(400).json({ status: "hata", message: err.message });
-    }
+    } catch (err) { res.status(400).json({ message: err.message }); }
 };
 
-// Req 4: Yeni Ürün Ekleme
+// 2. Yeni Ürün Ekle
 const addProduct = async (req, res) => {
     try {
-        const newProduct = await Product.create(req.body);
-        res.status(201).json({ status: "başarılı", product: newProduct });
-    } catch (err) {
-        res.status(400).json({ status: "hata", message: "Barkod zaten kayıtlı olabilir!" });
-    }
+        const product = await Product.create(req.body);
+        res.status(201).json({ status: "başarılı", product });
+    } catch (err) { res.status(400).json({ message: "Barkod zaten kayıtlı!" }); }
 };
 
-// Req 7: Stok Güncelleme (Miktarın üzerine ekler)
+// 3. Stok Güncelle (+)
 const updateProduct = async (req, res) => {
     try {
-        const { barcode } = req.params;
         const { stockQuantity } = req.body;
-        const product = await Product.findOne({ barcode });
-        if (!product) return res.status(404).json({ message: "Ürün bulunamadı" });
-
-        product.stockQuantity += Number(stockQuantity);
-        await product.save();
-        res.status(200).json({ status: "başarılı", product });
-    } catch (err) {
-        res.status(400).json({ status: "hata", message: err.message });
-    }
+        const product = await Product.findOne({ barcode: req.params.barcode });
+        if (product) {
+            product.stockQuantity += Number(stockQuantity);
+            await product.save();
+            res.status(200).json({ status: "başarılı" });
+        }
+    } catch (err) { res.status(400).json({ message: err.message }); }
 };
 
-// Req 8: Ürün Silme
-const deleteProduct = async (req, res) => {
-    try {
-        await Product.findOneAndDelete({ barcode: req.params.barcode });
-        res.status(200).json({ status: "başarılı", message: "Ürün silindi" });
-    } catch (err) {
-        res.status(400).json({ status: "hata", message: err.message });
-    }
-};
-
-// --- SATIŞ VE ANALİZ ---
-
-// Req 9: Satış Kaydı (Stoktan düşer)
+// 4. Satış Yap & Kaydet
 const recordSale = async (req, res) => {
     try {
         const { barcode, quantity } = req.body;
         const product = await Product.findOne({ barcode });
+        if (!product || product.stockQuantity < quantity) return res.status(400).json({ message: "Yetersiz stok!" });
 
-        if (!product || product.stockQuantity < quantity) {
-            return res.status(400).json({ status: "hata", message: "Yetersiz stok!" });
-        }
-
-        const salePrice = product.sellPrice * quantity;
-
-        // 1. Stoğu düş
         product.stockQuantity -= Number(quantity);
         await product.save();
 
-        // 2. Satış Geçmişine Yaz (YENİ!)
         await Sale.create({
             productBarcode: barcode,
             productName: product.name,
-            quantity: quantity,
-            totalPrice: salePrice
+            quantity: Number(quantity),
+            totalPrice: product.sellPrice * quantity
         });
-
-        res.status(200).json({ status: "başarılı", message: "Satış başarıyla kaydedildi!" });
-    } catch (err) { res.status(400).json({ status: "hata", message: err.message }); }
+        res.status(200).json({ status: "başarılı" });
+    } catch (err) { res.status(400).json({ message: err.message }); }
 };
 
-// Req 15 & 11: Dashboard Özeti (Kritik Stok Dahil)
+// 5. Ürün Sil
+const deleteProduct = async (req, res) => {
+    try {
+        await Product.deleteOne({ barcode: req.params.barcode });
+        res.status(200).json({ status: "başarılı" });
+    } catch (err) { res.status(400).json({ message: err.message }); }
+};
+
+// 6. Dashboard Özetleri
 const getDashboardSummary = async (req, res) => {
     try {
-        const totalProducts = await Product.countDocuments();
-        const criticalAlerts = await Product.countDocuments({ stockQuantity: { $lte: 5 } });
-        res.status(200).json({ 
-            status: "başarılı", 
-            dashboard: { inventoryDiversity: totalProducts, criticalAlerts: criticalAlerts } 
-        });
-    } catch (err) {
-        res.status(400).json({ status: "hata", message: err.message });
-    }
+        const products = await Product.find();
+        const critical = products.filter(p => p.stockQuantity <= 5).length;
+        res.status(200).json({ dashboard: { inventoryDiversity: products.length, criticalAlerts: critical } });
+    } catch (err) { res.status(400).json({ message: err.message }); }
 };
 
-// Req 12: Finansal Özet (Envanter Değeri)
+// 7. Envanter Değeri
 const getInventoryValue = async (req, res) => {
     try {
         const products = await Product.find();
-        let totalValue = 0;
-        products.forEach(p => { totalValue += (p.sellPrice * p.stockQuantity); });
-        res.status(200).json({ status: "başarılı", summary: { potentialTotalRevenue: totalValue } });
-    } catch (err) {
-        res.status(400).json({ status: "hata", message: err.message });
-    }
+        const total = products.reduce((sum, p) => sum + (p.stockQuantity * p.sellPrice), 0);
+        res.status(200).json({ summary: { potentialTotalRevenue: total } });
+    } catch (err) { res.status(400).json({ message: err.message }); }
 };
 
-// Req 14: En Son Eklenen 5 Ürün
-const getLastProducts = async (req, res) => {
-    try {
-        const lastProducts = await Product.find().sort({ _id: -1 }).limit(5);
-        res.status(200).json({ status: "başarılı", products: lastProducts });
-    } catch (err) {
-        res.status(400).json({ status: "hata", message: err.message });
-    }
-};
-
-// Req 13: Yedekleme (Tüm veriyi JSON olarak döner)
+// 8. Yedekleme (JSON)
 const getBackup = async (req, res) => {
     try {
-        const allData = await Product.find();
-        res.status(200).json({ status: "başarılı", backup: allData, date: new Date() });
-    } catch (err) {
-        res.status(400).json({ status: "hata", message: err.message });
-    }
+        const products = await Product.find();
+        const sales = await Sale.find();
+        res.status(200).json({ products, sales });
+    } catch (err) { res.status(400).json({ message: err.message }); }
 };
 const getSalesReport = async (req, res) => {
     try {
-        const sales = await Sale.find().sort({ saleDate: -1 }); // En yeniden eskiye
+        const sales = await Sale.find().sort({ saleDate: -1 }); // En son satış en üstte
         
-        // Özet Veriler
         let totalRevenue = 0;
         let totalItemsSold = 0;
+
         sales.forEach(s => {
             totalRevenue += s.totalPrice;
             totalItemsSold += s.quantity;
@@ -144,13 +102,9 @@ const getSalesReport = async (req, res) => {
             sales, 
             summary: { totalRevenue, totalItemsSold } 
         });
-    } catch (err) { res.status(400).json({ status: "hata", message: err.message }); }
+    } catch (err) {
+        res.status(400).json({ status: "hata", message: err.message });
+    }
 };
 
-
-// --- DIŞA AKTARMA ---
-module.exports = {
-    getProducts, addProduct, updateProduct, deleteProduct,
-    recordSale, getDashboardSummary, getInventoryValue,
-    getLastProducts, getBackup, getSalesReport
-};
+module.exports = { getProducts, addProduct, updateProduct, deleteProduct, recordSale, getDashboardSummary, getInventoryValue, getBackup, getSalesReport };
