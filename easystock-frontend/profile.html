@@ -3,24 +3,30 @@
 <head>
     <meta charset="UTF-8">
     <title>EasyStock | Profilim</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
     <style>
-        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Segoe UI', sans-serif; }
+        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Inter', sans-serif; }
         body { background: #f0f2f5; display: flex; align-items: center; justify-content: center; height: 100vh; }
-        .card { background: white; padding: 40px; border-radius: 20px; box-shadow: 0 10px 25px rgba(0,0,0,0.1); width: 420px; text-align: center; }
-        .card h2 { margin-bottom: 25px; color: #2c3e50; }
-        input { width: 100%; padding: 14px; border: 1px solid #ddd; border-radius: 10px; margin-bottom: 15px; outline: none; }
-        .btn-update { width: 100%; background: #3498db; color: white; border: none; padding: 15px; border-radius: 10px; cursor: pointer; font-weight: bold; font-size: 16px; }
-        .btn-back { display: block; margin-top: 25px; color: #3498db; text-decoration: none; font-weight: 600; }
+        .card { background: white; padding: 50px; border-radius: 30px; box-shadow: 0 20px 50px rgba(0,0,0,0.05); width: 100%; max-width: 480px; text-align: center; }
+        .avatar-circle { width: 100px; height: 100px; background: #4361ee; color: white; border-radius: 50%; display: flex; align-items: center; justify-content: center; margin: 0 auto 25px; font-size: 40px; font-weight: 700; box-shadow: 0 10px 20px rgba(67, 97, 238, 0.2); }
+        h2 { margin-bottom: 30px; color: #1e1e2d; }
+        input { width: 100%; padding: 15px; border: 1px solid #e2e8f0; border-radius: 15px; margin-bottom: 15px; outline: none; background: #f8fafc; transition: 0.3s; }
+        input:focus { border-color: #4361ee; background: #fff; box-shadow: 0 0 0 4px rgba(67, 97, 238, 0.1); }
+        .btn-update { width: 100%; background: #4361ee; color: white; border: none; padding: 18px; border-radius: 15px; cursor: pointer; font-weight: 700; font-size: 16px; margin-top: 15px; transition: 0.3s; }
+        .btn-update:hover { transform: translateY(-3px); box-shadow: 0 10px 20px rgba(67, 97, 238, 0.2); }
+        .btn-back { display: block; margin-top: 30px; color: #718096; text-decoration: none; font-weight: 600; transition: 0.3s; }
+        .btn-back:hover { color: #4361ee; }
     </style>
 </head>
 <body>
     <div class="card">
-        <h2>👤 Profil Düzenle</h2>
-        <p id="emailDisplay" style="color: #95a5a6; margin-bottom: 25px;"></p>
+        <div class="avatar-circle" id="userInitial">S</div>
+        <h2>Profil Ayarları</h2>
         <form id="updateForm">
-            <input type="text" id="newName" placeholder="Yeni Ad Soyad" required>
-            <input type="password" id="newPass" placeholder="Yeni Şifre (Değişmeyecekse boş bırak)">
-            <button type="submit" class="btn-update">Bilgileri Güncelle</button>
+            <input type="text" id="newName" placeholder="Ad Soyad" required>
+            <input type="email" id="pEmail" readonly style="color: #a0aec0; cursor: not-allowed;">
+            <input type="password" id="newPass" placeholder="Yeni Şifre (Boş bırakılabilir)">
+            <button type="submit" class="btn-update">Değişiklikleri Kaydet</button>
         </form>
         <a href="index.html" class="btn-back">← Dashboard'a Geri Dön</a>
     </div>
@@ -30,8 +36,9 @@
         const user = JSON.parse(localStorage.getItem('user'));
         if(!user) window.location.href = "login.html";
 
-        document.getElementById('emailDisplay').innerText = `Kayıtlı E-posta: ${user.email}`;
         document.getElementById('newName').value = user.name;
+        document.getElementById('pEmail').value = user.email;
+        document.getElementById('userInitial').innerText = user.name.charAt(0).toUpperCase();
 
         document.getElementById('updateForm').addEventListener('submit', async (e) => {
             e.preventDefault();
@@ -44,8 +51,9 @@
             if(res.ok) {
                 const result = await res.json();
                 localStorage.setItem('user', JSON.stringify(result.user));
-                alert("Profil güncellendi kral!");
-            } else { alert("Güncelleme başarısız!"); }
+                alert("Bilgiler başarıyla güncellendi kral!");
+                location.reload();
+            }
         });
     </script>
 </body>
