@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>EasyStock Test Paneli</title>
+    <style>
+        /* CSS BURADA */
+        body { font-family: sans-serif; background: #f0f2f5; padding: 20px; }
+        .box { background: white; padding: 20px; border-radius: 8px; box-shadow: 0 2px 5px rgba(0,0,0,0.1); margin-bottom: 20px; }
+        h1 { color: #2c3e50; }
+        .btn { background: #3498db; color: white; padding: 10px; border: none; cursor: pointer; border-radius: 5px; }
+        table { width: 100%; border-collapse: collapse; margin-top: 10px; }
+        th, td { border: 1px solid #ddd; padding: 8px; text-align: left; }
+        th { background-color: #3498db; color: white; }
+
+        @media (max-width: 640px) {
+            body { padding: 14px; }
+            .box { padding: 16px; }
+            h1 { font-size: 22px; }
+            .btn { width: 100%; padding: 12px; }
+            table, thead, tbody, th, td, tr { display: block; }
+            tr { margin-bottom: 12px; }
+            th { position: absolute; top: -9999px; left: -9999px; }
+            td { border: none; position: relative; padding-left: 50%; white-space: pre-wrap; }
+            td:before { position: absolute; top: 8px; left: 12px; width: 45%; padding-right: 10px; white-space: nowrap; font-weight: bold; }
+            td:nth-of-type(1):before { content: 'Barkod'; }
+            td:nth-of-type(2):before { content: 'Ürün'; }
+            td:nth-of-type(3):before { content: 'Stok'; }
+        }
+    </style>
+</head>
+<body>
+
+    <div class="box">
+        <h1>🚀 EasyStock Kontrol Paneli</h1>
+        <button class="btn" onclick="verileriGetir()">Verileri Yenile</button>
+    </div>
+
+    <div class="box">
+        <h3>📊 Sistem Özeti</h3>
+        <p id="ozet">Yükleniyor...</p>
+    </div>
+
+    <div class="box">
+        <h3>📦 Ürün Listesi</h3>
+        <table>
+            <thead>
+                <tr><th>Barkod</th><th>Ürün</th><th>Stok</th></tr>
+            </thead>
+            <tbody id="urun-tablosu">
+                </tbody>
+        </table>
+    </div>
+
+    <script>
+        // JAVASCRIPT BURADA
+        const API_URL = "https://easystock-api.vercel.app/api";
+
+        async function verileriGetir() {
+            try {
+                // 1. Dashboard'u çek
+                const dRes = await fetch(`${API_URL}/system/dashboard`);
+                const dData = await dRes.json();
+                document.getElementById('ozet').innerText = `Toplam Ürün: ${dData.dashboard.inventoryDiversity} | Kritik Stok: ${dData.dashboard.criticalAlerts}`;
+
+                // 2. Ürünleri çek
+                const uRes = await fetch(`${API_URL}/products`);
+                const uData = await uRes.json();
+                const tablo = document.getElementById('urun-tablosu');
+                tablo.innerHTML = "";
+                
+                uData.products.forEach(p => {
+                    tablo.innerHTML += `<tr><td>${p.barcode}</td><td>${p.name}</td><td>${p.stockQuantity}</td></tr>`;
+                });
+            } catch (err) {
+                alert("Hata: Backend'e ulaşılamadı! CORS yüklü mü? Docker çalışıyor mu?");
+                console.error(err);
+            }
+        }
+
+        // Sayfa açılınca otomatik çalıştır
+        verileriGetir();
+    </script>
+</body>
+</html>

@@ -1,0 +1,156 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>EasyStock | Satış Analizleri</title>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;600;700;800&display=swap" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <style>
+        :root { --primary: #6366f1; --success: #10b981; --sidebar: #0f172a; --bg: #f8fafc; }
+        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Plus Jakarta Sans', sans-serif; }
+        body { background: var(--bg); color: #1e293b; padding: 40px; min-height: 100vh; }
+        
+        .container { max-width: 1100px; margin: 0 auto; }
+        .header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 40px; }
+        .btn-back { padding: 12px 25px; background: white; border-radius: 16px; text-decoration: none; color: var(--primary); font-weight: 700; box-shadow: 0 4px 6px rgba(0,0,0,0.02); transition: 0.3s; border: 1px solid #e2e8f0; }
+        .btn-back:hover { transform: translateY(-2px); box-shadow: 0 10px 15px rgba(0,0,0,0.05); }
+
+        .report-grid { display: grid; grid-template-columns: 2fr 1fr; gap: 30px; margin-bottom: 40px; }
+        .panel { background: white; padding: 30px; border-radius: 32px; border: 1px solid #e2e8f0; }
+
+        .stat-box { background: #f8fafc; padding: 20px; border-radius: 20px; border-left: 5px solid var(--primary); margin-bottom: 15px; }
+        .stat-box h3 { font-size: 11px; color: #64748b; text-transform: uppercase; margin-bottom: 5px; letter-spacing: 1px; }
+        .stat-box p { font-size: 24px; font-weight: 800; }
+
+        .table-wrap { margin-top: 20px; width: 100%; overflow-x: auto; }
+        table { width: 100%; border-collapse: separate; border-spacing: 0 8px; }
+        th { padding: 12px 20px; color: #94a3b8; font-size: 11px; text-transform: uppercase; text-align: left; }
+        td { padding: 18px 20px; background: #fff; border-top: 1px solid #f1f5f9; border-bottom: 1px solid #f1f5f9; font-size: 14px; }
+        td:first-child { border-left: 1px solid #f1f5f9; border-radius: 16px 0 0 16px; }
+        td:last-child { border-right: 1px solid #f1f5f9; border-radius: 0 16px 16px 0; }
+        
+        .price-text { color: var(--success); font-weight: 800; }
+
+        @media (max-width: 900px) {
+            .report-grid { grid-template-columns: 1fr; }
+            .header { flex-direction: column; align-items: flex-start; gap: 16px; }
+            .btn-back { width: 100%; text-align: center; }
+        }
+
+        @media (max-width: 640px) {
+            body { padding: 20px 16px; }
+            .panel { padding: 22px; }
+            .stat-box { padding: 16px; }
+            td, th { padding: 14px 12px; font-size: 13px; }
+            .report-grid { gap: 20px; }
+        }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <div class="header">
+        <h1>📊 Satış & Kazanç Raporu</h1>
+        <a href="index.html" class="btn-back">← Panele Dön</a>
+    </div>
+
+    <div class="report-grid">
+        <div class="panel">
+            <h2 style="font-size:18px; margin-bottom:20px;">🔥 En Çok Satan Ürünler</h2>
+            <div style="height:300px;"><canvas id="salesChart"></canvas></div>
+        </div>
+
+        <div class="panel">
+            <h2 style="font-size:18px; margin-bottom:20px;">💰 Kasa Özeti</h2>
+            <div class="stat-box">
+                <h3>Toplam Ciro</h3>
+                <p id="revText">0 TL</p>
+            </div>
+            <div class="stat-box" style="border-left-color: #38bdf8;">
+                <h3>Satılan Toplam Ürün</h3>
+                <p id="soldText">0 Adet</p>
+            </div>
+            <div class="stat-box" style="border-left-color: #8b5cf6;">
+                <h3>Toplam İşlem</h3>
+                <p id="transText">0</p>
+            </div>
+        </div>
+    </div>
+
+    <div class="panel">
+        <h2 style="font-size:18px; margin-bottom:20px;">📑 Son Satış Hareketleri</h2>
+        <div class="table-wrap">
+            <table>
+                <thead>
+                    <tr><th>Tarih & Saat</th><th>Ürün Adı</th><th>Miktar</th><th>Toplam Tutar</th></tr>
+                </thead>
+                <tbody id="salesTable"></tbody>
+            </table>
+        </div>
+    </div>
+</div>
+
+<script>
+    const API = "https://easystock-api.vercel.app/api";
+    let myChart = null;
+
+    async function raporuYukle() {
+        try {
+            const res = await fetch(`${API}/sales/report`);
+            const data = await res.json();
+            
+            // 1. Özetleri Yaz
+            document.getElementById('revText').innerText = data.summary.totalRevenue.toLocaleString() + " TL";
+            document.getElementById('soldText').innerText = data.summary.totalItemsSold + " Adet";
+            document.getElementById('transText').innerText = data.sales.length + " İşlem";
+
+            // 2. Tabloyu Doldur & Grafik Verisi Hazırla
+            const table = document.getElementById('salesTable');
+            table.innerHTML = "";
+            const productStats = {};
+
+            data.sales.forEach(s => {
+                const tarih = new Date(s.saleDate).toLocaleString('tr-TR');
+                table.innerHTML += `
+                    <tr>
+                        <td style="color:#64748b; font-size:12px;">${tarih}</td>
+                        <td><b>${s.productName}</b></td>
+                        <td>${s.quantity} Adet</td>
+                        <td class="price-text">${s.totalPrice} TL</td>
+                    </tr>`;
+
+                // Grafik için ürünleri grupla
+                productStats[s.productName] = (productStats[s.productName] || 0) + s.quantity;
+            });
+
+            cizGrafik(productStats);
+        } catch (e) { console.error(e); }
+    }
+
+    function cizGrafik(stats) {
+        const ctx = document.getElementById('salesChart').getContext('2d');
+        const labels = Object.keys(stats);
+        const values = Object.values(stats);
+
+        if(myChart) myChart.destroy();
+        myChart = new Chart(ctx, {
+            type: 'bar',
+            data: {
+                labels: labels,
+                datasets: [{
+                    label: 'Satış Adedi',
+                    data: values,
+                    backgroundColor: '#6366f1',
+                    borderRadius: 10
+                }]
+            },
+            options: { maintainAspectRatio: false, plugins: { legend: { display: false } } }
+        });
+    }
+
+    window.onload = raporuYukle;
+</script>
+
+</body>
+</html>

@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>EasyStock | Giriş Yap</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Segoe UI', sans-serif; }
+        body { background: linear-gradient(135deg, #2c3e50, #34495e); min-height: 100vh; display: flex; align-items: center; justify-content: center; padding: 20px; }
+        
+        .login-card { background: white; padding: 40px; border-radius: 20px; box-shadow: 0 10px 25px rgba(0,0,0,0.2); width: 100%; max-width: 400px; text-align: center; }
+        .login-card h2 { color: #2c3e50; margin-bottom: 10px; }
+        .login-card p { color: #7f8c8d; margin-bottom: 30px; font-size: 14px; }
+        
+        .form-group { margin-bottom: 20px; text-align: left; }
+        label { display: block; margin-bottom: 8px; color: #34495e; font-weight: 600; font-size: 14px; }
+        input { width: 100%; padding: 12px 15px; border: 1px solid #dfe6e9; border-radius: 10px; outline: none; transition: 0.3s; }
+        input:focus { border-color: #3498db; box-shadow: 0 0 8px rgba(52, 152, 219, 0.2); }
+        
+        .btn-login { width: 100%; background: #3498db; color: white; border: none; padding: 14px; border-radius: 10px; cursor: pointer; font-weight: bold; font-size: 16px; margin-top: 10px; transition: 0.3s; }
+        .btn-login:hover { background: #2980b9; transform: translateY(-2px); }
+        
+        .footer-link { margin-top: 25px; font-size: 13px; color: #7f8c8d; }
+        .footer-link a { color: #3498db; text-decoration: none; font-weight: bold; }
+
+        @media (max-width: 500px) {
+            .login-card { padding: 28px; border-radius: 18px; }
+            .btn-login { font-size: 15px; padding: 12px; }
+            .login-card p { font-size: 13px; }
+        }
+    </style>
+</head>
+<body>
+
+    <div class="login-card">
+        <h2>📦 EasyStock</h2>
+        <p>Devam etmek için lütfen giriş yapın.</p>
+        
+        <form id="loginForm">
+            <div class="form-group">
+                <label>E-posta Adresi</label>
+                <input type="email" id="email" placeholder="ornek@mail.com" required>
+            </div>
+            <div class="form-group">
+                <label>Şifre</label>
+                <input type="password" id="password" placeholder="••••••••" required>
+            </div>
+            <button type="submit" class="btn-login">Giriş Yap</button>
+        </form>
+
+        <div class="footer-link">
+            Hesabınız yok mu? <a href="register.html">Hemen Kayıt Ol</a>
+        </div>
+    </div>
+
+   <script>
+   // login.html içindeki <script> kısmını bununla tazele
+const API = "https://easystock-api.vercel.app/api";
+
+document.getElementById('loginForm').addEventListener('submit', async (e) => {
+    e.preventDefault();
+    
+    const credentials = {
+        email: document.getElementById('email').value,
+        password: document.getElementById('password').value
+    };
+
+    try {
+        const res = await fetch(`${API}/login`, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(credentials)
+        });
+
+        const data = await res.json();
+
+        if (res.ok) {
+            // 1. Kullanıcıyı tarayıcı hafızasına çiviliyoruz
+            localStorage.setItem('user', JSON.stringify(data.user));
+            
+            // 2. IŞINLANMA KOMUTU (Buraya dikkat kral)
+            alert("Giriş Başarılı! Dashboard'a gidiyorsun...");
+            window.location.replace("index.html"); // .href yerine .replace daha garantidir
+        } else {
+            alert("Hata: " + (data.message || "Giriş yapılamadı!"));
+        }
+    } catch (err) {
+        alert("Backend'e ulaşılamıyor. Docker çalışıyor mu kral?");
+    }
+});
+</script>
+</body>
+</html>
