@@ -1,13 +1,13 @@
 <!DOCTYPE html>
 <html lang="tr">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
 <head>
     <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>EasyStock | Profilim</title>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
     <style>
         * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Inter', sans-serif; }
-        body { background: #f0f2f5; display: flex; align-items: center; justify-content: center; height: 100vh; }
+        body { background: #f0f2f5; display: flex; align-items: center; justify-content: center; min-height: 100vh; padding: 20px; }
         .card { background: white; padding: 50px; border-radius: 30px; box-shadow: 0 20px 50px rgba(0,0,0,0.05); width: 100%; max-width: 480px; text-align: center; }
         .avatar-circle { width: 100px; height: 100px; background: #4361ee; color: white; border-radius: 50%; display: flex; align-items: center; justify-content: center; margin: 0 auto 25px; font-size: 40px; font-weight: 700; box-shadow: 0 10px 20px rgba(67, 97, 238, 0.2); }
         h2 { margin-bottom: 30px; color: #1e1e2d; }
@@ -17,6 +17,14 @@
         .btn-update:hover { transform: translateY(-3px); box-shadow: 0 10px 20px rgba(67, 97, 238, 0.2); }
         .btn-back { display: block; margin-top: 30px; color: #718096; text-decoration: none; font-weight: 600; transition: 0.3s; }
         .btn-back:hover { color: #4361ee; }
+
+        @media (max-width: 600px) {
+            body { padding: 16px; }
+            .card { padding: 30px; border-radius: 22px; }
+            .avatar-circle { width: 80px; height: 80px; font-size: 30px; }
+            input { padding: 14px; }
+            .btn-update { padding: 14px; font-size: 15px; }
+        }
     </style>
 </head>
 <body>
@@ -33,7 +41,7 @@
     </div>
 
     <script>
-        const API = "http://localhost:9000/api";
+        const API = "https://easystock-api.vercel.app/api";
         const user = JSON.parse(localStorage.getItem('user'));
         if(!user) window.location.href = "login.html";
 

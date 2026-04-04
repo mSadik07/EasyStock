@@ -2,15 +2,22 @@
 <html lang="tr">
 <head>
     <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>EasyStock | Kayıt Ol</title>
     <style>
         * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Segoe UI', sans-serif; }
-        body { background: linear-gradient(135deg, #1abc9c, #16a085); height: 100vh; display: flex; align-items: center; justify-content: center; }
+        body { background: linear-gradient(135deg, #1abc9c, #16a085); min-height: 100vh; display: flex; align-items: center; justify-content: center; padding: 20px; }
         .card { background: white; padding: 40px; border-radius: 20px; box-shadow: 0 10px 25px rgba(0,0,0,0.2); width: 100%; max-width: 400px; text-align: center; }
         .card h2 { margin-bottom: 25px; color: #2c3e50; }
         input { width: 100%; padding: 12px; border: 1px solid #ddd; border-radius: 10px; margin-bottom: 15px; outline: none; }
         .btn { width: 100%; background: #1abc9c; color: white; border: none; padding: 14px; border-radius: 10px; cursor: pointer; font-weight: bold; transition: 0.3s; }
         .btn:hover { background: #16a085; transform: translateY(-2px); }
+
+        @media (max-width: 520px) {
+            .card { padding: 28px; border-radius: 18px; }
+            .btn { padding: 12px; }
+            input { padding: 10px; }
+        }
     </style>
 </head>
 <body>
@@ -28,7 +35,7 @@
     </div>
 
     <script>
-        const API = "http://localhost:9000/api";
+        const API = "https://easystock-api.vercel.app/api";
         
         document.getElementById('regForm').addEventListener('submit', async (e) => {
             e.preventDefault();

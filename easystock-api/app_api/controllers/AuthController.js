@@ -27,6 +27,7 @@ const updateUser = async (req, res) => {
         const updateData = { name };
         if (password) updateData.password = password;
         const user = await User.findOneAndUpdate({ email: req.params.email }, updateData, { new: true });
+        if (!user) return res.status(404).json({ status: "hata", message: "Kullanıcı bulunamadı." });
         res.status(200).json({ status: "başarılı", user: { name: user.name, email: user.email } });
     } catch (err) { res.status(400).json({ status: "hata", message: "Güncelleme başarısız!" }); }
 };

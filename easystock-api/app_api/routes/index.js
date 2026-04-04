@@ -19,5 +19,6 @@ router.get('/sales/report', ctrlProduct.getSalesReport);
 // Auth Rotaları
 router.post('/register', ctrlAuth.register);
 router.post('/login', ctrlAuth.login);
+router.put('/users/:email', ctrlAuth.updateUser);
 
 module.exports = router;

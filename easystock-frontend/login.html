@@ -2,10 +2,11 @@
 <html lang="tr">
 <head>
     <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>EasyStock | Giriş Yap</title>
     <style>
         * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Segoe UI', sans-serif; }
-        body { background: linear-gradient(135deg, #2c3e50, #34495e); height: 100vh; display: flex; align-items: center; justify-content: center; }
+        body { background: linear-gradient(135deg, #2c3e50, #34495e); min-height: 100vh; display: flex; align-items: center; justify-content: center; padding: 20px; }
         
         .login-card { background: white; padding: 40px; border-radius: 20px; box-shadow: 0 10px 25px rgba(0,0,0,0.2); width: 100%; max-width: 400px; text-align: center; }
         .login-card h2 { color: #2c3e50; margin-bottom: 10px; }
@@ -21,6 +22,12 @@
         
         .footer-link { margin-top: 25px; font-size: 13px; color: #7f8c8d; }
         .footer-link a { color: #3498db; text-decoration: none; font-weight: bold; }
+
+        @media (max-width: 500px) {
+            .login-card { padding: 28px; border-radius: 18px; }
+            .btn-login { font-size: 15px; padding: 12px; }
+            .login-card p { font-size: 13px; }
+        }
     </style>
 </head>
 <body>
@@ -48,7 +55,7 @@
 
    <script>
    // login.html içindeki <script> kısmını bununla tazele
-const API = "http://localhost:9000/api";
+const API = "https://easystock-api.vercel.app/api";
 
 document.getElementById('loginForm').addEventListener('submit', async (e) => {
     e.preventDefault();

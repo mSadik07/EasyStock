@@ -31,6 +31,20 @@
         td:last-child { border-right: 1px solid #f1f5f9; border-radius: 0 16px 16px 0; }
         
         .price-text { color: var(--success); font-weight: 800; }
+
+        @media (max-width: 900px) {
+            .report-grid { grid-template-columns: 1fr; }
+            .header { flex-direction: column; align-items: flex-start; gap: 16px; }
+            .btn-back { width: 100%; text-align: center; }
+        }
+
+        @media (max-width: 640px) {
+            body { padding: 20px 16px; }
+            .panel { padding: 22px; }
+            .stat-box { padding: 16px; }
+            td, th { padding: 14px 12px; font-size: 13px; }
+            .report-grid { gap: 20px; }
+        }
     </style>
 </head>
 <body>
@@ -78,7 +92,7 @@
 </div>
 
 <script>
-    const API = "http://localhost:9000/api";
+    const API = "https://easystock-api.vercel.app/api";
     let myChart = null;
 
     async function raporuYukle() {

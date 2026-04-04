@@ -22,7 +22,23 @@
         table { width: 100%; border-collapse: separate; border-spacing: 0 8px; }
         td { padding: 15px; background: #fff; border-top: 1px solid #f1f5f9; border-bottom: 1px solid #f1f5f9; }
         .btn-sm { padding: 6px 10px; border-radius: 8px; border: none; cursor: pointer; font-weight: 700; font-size: 11px; }
-        @media (max-width: 1000px) { .dashboard-layout { grid-template-columns: 1fr; } body { flex-direction: column; overflow: auto; } .sidebar { width: 100%; height: auto; } }
+        @media (max-width: 1000px) {
+            .dashboard-layout { grid-template-columns: 1fr; }
+            body { flex-direction: column; overflow: auto; }
+            .sidebar { width: 100%; height: auto; padding: 20px; }
+            .main { padding: 20px; }
+            .form-grid { grid-template-columns: 1fr; }
+        }
+        @media (max-width: 650px) {
+            .sidebar { padding: 16px; }
+            .card-grid { grid-template-columns: 1fr; }
+            .section { padding: 20px; }
+            .form-grid { gap: 10px; }
+            table, td { font-size: 13px; }
+            td { padding: 12px; }
+            .btn-sm { width: 100%; margin-bottom: 8px; }
+            .btn-sm:last-child { margin-bottom: 0; }
+        }
     </style>
 </head>
 <body>
@@ -74,7 +90,7 @@
     </main>
 
     <script>
-        const API = "http://localhost:9000/api";
+        const API = "https://easystock-api.vercel.app/api";
         let catChart = null;
 
         window.onload = () => {

@@ -2,6 +2,7 @@
 <html lang="tr">
 <head>
     <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>EasyStock Test Paneli</title>
     <style>
         /* CSS BURADA */
@@ -12,6 +13,21 @@
         table { width: 100%; border-collapse: collapse; margin-top: 10px; }
         th, td { border: 1px solid #ddd; padding: 8px; text-align: left; }
         th { background-color: #3498db; color: white; }
+
+        @media (max-width: 640px) {
+            body { padding: 14px; }
+            .box { padding: 16px; }
+            h1 { font-size: 22px; }
+            .btn { width: 100%; padding: 12px; }
+            table, thead, tbody, th, td, tr { display: block; }
+            tr { margin-bottom: 12px; }
+            th { position: absolute; top: -9999px; left: -9999px; }
+            td { border: none; position: relative; padding-left: 50%; white-space: pre-wrap; }
+            td:before { position: absolute; top: 8px; left: 12px; width: 45%; padding-right: 10px; white-space: nowrap; font-weight: bold; }
+            td:nth-of-type(1):before { content: 'Barkod'; }
+            td:nth-of-type(2):before { content: 'Ürün'; }
+            td:nth-of-type(3):before { content: 'Stok'; }
+        }
     </style>
 </head>
 <body>
@@ -39,7 +55,7 @@
 
     <script>
         // JAVASCRIPT BURADA
-        const API_URL = "http://localhost:9000/api";
+        const API_URL = "https://easystock-api.vercel.app/api";
 
         async function verileriGetir() {
             try {
