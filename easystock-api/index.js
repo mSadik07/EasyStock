@@ -2,8 +2,8 @@ const express = require('express');
 const mongoose = require('mongoose');
 const cors = require('cors'); // 1. CORS'u çağırdık
 const app = express();
-const port = process.env.PORT || 9000;
-const mongoUri = process.env.MONGODB_URI || 'mongodb://db:27017/easystock';
+const port = process.env.PORT || 9001;
+const mongoUri = process.env.MONGODB_URI || 'mongodb://localhost:27017/easystock';
 
 app.use(cors()); // 2. Kapıları tüm tarayıcılara açtık
 app.use(express.json());

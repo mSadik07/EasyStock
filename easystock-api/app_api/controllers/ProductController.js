@@ -13,7 +13,14 @@ const getProducts = async (req, res) => {
 // 2. Yeni Ürün Ekle
 const addProduct = async (req, res) => {
     try {
-        const product = await Product.create(req.body);
+        const { barcode, name, price, stock } = req.body;
+        const product = await Product.create({
+            barcode,
+            name,
+            stockQuantity: stock,
+            buyPrice: price,
+            sellPrice: price // Şimdilik aynı
+        });
         res.status(201).json({ status: "başarılı", product });
     } catch (err) { res.status(400).json({ message: "Barkod zaten kayıtlı!" }); }
 };
