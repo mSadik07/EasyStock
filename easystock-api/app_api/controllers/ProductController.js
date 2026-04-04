@@ -13,16 +13,19 @@ const getProducts = async (req, res) => {
 // 2. Yeni Ürün Ekle
 const addProduct = async (req, res) => {
     try {
-        const { barcode, name, price, stock } = req.body;
+        const { barcode, name, category, stockQuantity, buyPrice, sellPrice } = req.body;
         const product = await Product.create({
             barcode,
             name,
-            stockQuantity: stock,
-            buyPrice: price,
-            sellPrice: price // Şimdilik aynı
+            category,
+            stockQuantity: Number(stockQuantity) || 0,
+            buyPrice: Number(buyPrice) || 0,
+            sellPrice: Number(sellPrice) || 0
         });
         res.status(201).json({ status: "başarılı", product });
-    } catch (err) { res.status(400).json({ message: "Barkod zaten kayıtlı!" }); }
+    } catch (err) {
+        res.status(400).json({ message: err.message || "Ürün eklenirken hata oluştu." });
+    }
 };
 
 // 3. Stok Güncelle (+)
