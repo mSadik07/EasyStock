@@ -1,5 +1,5 @@
 # Mehmet SAdık Avcı'nın Web Frontend Görevleri
-**Front-end Test Videosu:** [Link buraya eklenecek](https://example.com)
+**Front-end Test Videosu:** [FRONTEND Tanıtım Videosu](https://youtu.be/wgvCAJsZCSs)
 
 ### 1. Üye Olma
 * **API Metodu:** `POST /auth/register`
