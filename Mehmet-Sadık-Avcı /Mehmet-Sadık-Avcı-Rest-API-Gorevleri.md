@@ -104,17 +104,7 @@
 
 - **Response:** `200 OK` - Bitmeye yaklaşan ve kritik seviye altındaki ürünler döner.
 
-## 11. Stok Ömrü Tahminleme (Madde 1)
-- **Endpoint:** GET /analytics/predict/{id}
-
-- **Response:** `200 OK` - { "estimatedDays": 12, "predictionDate": "2026-03-20" }
-
-## 12. Ölü Stok Analizi (Madde 1)
-- **Endpoint:** GET /analytics/dead-stock
-
-- **Response:** `200 OK` - Son 30 gündür satılmayan ürünlerin listesi.
-
-## 13. Satış Kaydı Oluşturma
+## 11. Satış Kaydı Oluşturma
 - **Endpoint:** POST /sales
 
 - **Request Body:**
@@ -128,8 +118,3 @@
 }
 ```
 - **Response:** `201 Created` - Satış kaydedildi, stok otomatik düştü.
-
-## 14. Bildirim Yönetimi
-- **Endpoint:** GET /notifications
-
-- **Response:** `200 OK` - Okunmamış stok uyarıları listesi.
