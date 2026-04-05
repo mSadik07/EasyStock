@@ -5,7 +5,7 @@ const app = express();
 const port = process.env.PORT || 9000;
 const mongoUri = process.env.MONGODB_URI || 'mongodb://db:27017/easystock';
 
-app.use(cors()); // 2. Kapıları tüm tarayıcılara açtık
+app.use(cors({ origin: 'https://easystock-frontend-sigma.vercel.app' }));
 app.use(express.json());
 
 mongoose.connect(mongoUri)
