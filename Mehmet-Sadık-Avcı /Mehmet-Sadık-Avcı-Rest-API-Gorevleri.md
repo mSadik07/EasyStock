@@ -1,5 +1,9 @@
 # 🚀 EasyStock REST API Tasarımı
 
+# Mehmet Sadık Avcı'nın REST API Metotları
+
+**API Test Videosu:** [Link buraya eklenecek](https://example.com)
+
 ## 1. Üye Olma
 - **Endpoint:** `POST /auth/register`
 - **Request Body:**
