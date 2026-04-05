@@ -1,0 +1,27 @@
+{
+  "version": 2,
+  "builds": [
+    {
+      "src": "easystock-api/index.js",
+      "use": "@vercel/node"
+    },
+    {
+      "src": "easystock-frontend/**/*",
+      "use": "@vercel/static"
+    }
+  ],
+  "routes": [
+    {
+      "src": "/api/(.*)",
+      "dest": "/easystock-api/index.js"
+    },
+    {
+      "src": "/",
+      "dest": "/easystock-frontend/login.html"
+    },
+    {
+      "src": "/(.*)",
+      "dest": "/easystock-frontend/$1"
+    }
+  ]
+}
