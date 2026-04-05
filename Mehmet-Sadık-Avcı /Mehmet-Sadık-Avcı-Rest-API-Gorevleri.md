@@ -2,7 +2,7 @@
 
 # Mehmet Sadık Avcı'nın REST API Metotları
 
-**API Test Videosu:** [Link buraya eklenecek](https://example.com)
+**API Test Videosu:** [POSTMAN videosu](https://youtu.be/tw573JbJ3Hk)
 
 ## 1. Üye Olma
 - **Endpoint:** `POST /auth/register`
