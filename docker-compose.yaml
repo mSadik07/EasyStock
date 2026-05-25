@@ -14,6 +14,9 @@ services:
     container_name: easystock_api_kapsayici
     ports:
       - "9000:9000"
+    environment:
+      - PORT=9000
+      - MONGODB_URI=mongodb://db:27017/easystock
     depends_on:
       - db
     networks:

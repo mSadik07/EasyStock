@@ -4,7 +4,7 @@ pipeline {
     stages {
         stage('Checkout') {
             steps {
-                git branch: 'main', url: 'https://github.com/KULLANICI_ADIN/EasyStock.git'
+                git branch: 'main', url: 'https://github.com/mSadik07/EasyStock.git'
             }
         }
 
