@@ -1,10 +1,20 @@
 import axios from 'axios';
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import Constants from 'expo-constants';
 
-// Docker veya fiziksel cihaz için bilgisayarın yerel IP adresi
-const BASE_URL = 'http://192.168.1.133:5000'; // Bilgisayarınızın yerel IP adresi (Mobile Backend Port: 5000)
-// const BASE_URL = 'http://10.0.2.2:3000'; // Android emülatör için
-// const BASE_URL = 'http://localhost:3000'; // iOS simülatör için
+// Dinamik olarak bilgisayarın yerel IP adresini veya güncel IP'yi belirle
+const getBaseUrl = () => {
+  const hostUri = Constants.expoConfig?.hostUri;
+  if (hostUri) {
+    const ip = hostUri.split(':')[0];
+    if (ip && !ip.includes('exp.direct') && !ip.includes('ngrok')) {
+      return `http://${ip}:5000`;
+    }
+  }
+  return 'http://192.168.31.163:5000'; // Bilgisayarınızın güncel Wi-Fi IP adresi
+};
+
+const BASE_URL = getBaseUrl();
 
 const api = axios.create({
   baseURL: BASE_URL,

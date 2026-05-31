@@ -14,7 +14,9 @@ export default function NotificationsScreen() {
   const loadNotifications = async () => {
     try {
       const res = await getNotifications();
-      setNotifications(res.data.notifications);
+      // Sadece okunmamış bildirimleri filtrele (baktıktan sonra gitmesi için)
+      const unreadOnly = res.data.notifications.filter(item => !item.isRead);
+      setNotifications(unreadOnly);
       setUnreadCount(res.data.unreadCount);
     } catch (error) {
       console.log('Bildirimler yüklenemedi:', error);

@@ -1,7 +1,8 @@
 import React, { useState, useEffect } from 'react';
 import {
-  View, Text, FlatList, StyleSheet, ActivityIndicator, RefreshControl, SafeAreaView
+  View, Text, FlatList, StyleSheet, ActivityIndicator, RefreshControl
 } from 'react-native';
+import { SafeAreaView } from 'react-native-safe-area-context';
 import { getSales } from '../api/api';
 
 export default function SalesHistoryScreen() {

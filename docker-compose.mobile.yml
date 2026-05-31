@@ -1,30 +1,54 @@
 version: '3.8'
 
 services:
-  mongo:
+  mongo-mobile:
     image: mongo:6
-    container_name: easystock-mongo
+    container_name: easystock-mongo-mobile
     restart: unless-stopped
     ports:
-      - "27017:27017"
+      - "27018:27017"
     volumes:
-      - mongo_data:/data/db
+      - mongo_mobile_data:/data/db
+    networks:
+      - easystock-mobile-net
 
-  backend:
-    build: ./backend
-    container_name: easystock-backend
+  mobile-backend:
+    build: ./mobile-backend
+    container_name: easystock-mobile-backend
     restart: unless-stopped
     ports:
-      - "3000:3000"
+      - "5000:5000"
     environment:
-      - PORT=3000
-      - MONGO_URI=mongodb://mongo:27017/easystock
+      - PORT=5000
+      - MONGO_URI=mongodb://mongo-mobile:27017/easystock
       - JWT_SECRET=easystock_super_secret_key_2024
     depends_on:
-      - mongo
+      - mongo-mobile
     volumes:
-      - ./backend:/app
+      - ./mobile-backend:/app
       - /app/node_modules
+    networks:
+      - easystock-mobile-net
+
+  mobile-frontend:
+    build: ./mobile-frontend
+    container_name: easystock-mobile-frontend
+    restart: unless-stopped
+    ports:
+      - "19000:19000"
+      - "19001:19001"
+      - "19002:19002"
+    depends_on:
+      - mobile-backend
+    volumes:
+      - ./mobile-frontend:/app
+      - /app/node_modules
+    networks:
+      - easystock-mobile-net
 
 volumes:
-  mongo_data:
+  mongo_mobile_data:
+
+networks:
+  easystock-mobile-net:
+    driver: bridge
