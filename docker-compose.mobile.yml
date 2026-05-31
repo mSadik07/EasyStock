@@ -12,6 +12,25 @@ services:
     networks:
       - easystock-mobile-net
 
+  rabbitmq-mobile:
+    image: rabbitmq:3-management
+    container_name: easystock-rabbitmq-mobile
+    restart: unless-stopped
+    ports:
+      - "5672:5672"
+      - "15672:15672"
+    networks:
+      - easystock-mobile-net
+
+  redis-mobile:
+    image: redis:7-alpine
+    container_name: easystock-redis-mobile
+    restart: unless-stopped
+    ports:
+      - "6379:6379"
+    networks:
+      - easystock-mobile-net
+
   mobile-backend:
     build: ./mobile-backend
     container_name: easystock-mobile-backend
@@ -22,8 +41,12 @@ services:
       - PORT=5000
       - MONGO_URI=mongodb://mongo-mobile:27017/easystock
       - JWT_SECRET=easystock_super_secret_key_2024
+      - RABBITMQ_URI=amqp://rabbitmq-mobile:5672
+      - REDIS_URI=redis://redis-mobile:6379
     depends_on:
       - mongo-mobile
+      - rabbitmq-mobile
+      - redis-mobile
     networks:
       - easystock-mobile-net
 

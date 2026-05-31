@@ -3,6 +3,7 @@ const router = express.Router();
 const Product = require('../models/Product');
 const Notification = require('../models/Notification');
 const authMiddleware = require('../middleware/auth');
+const { getCache, setCache, clearUserCache } = require('../config/redis');
 
 // GEREKSİNİM 4: Yeni Ürün Ekleme
 // POST /products
@@ -38,6 +39,9 @@ router.post('/', authMiddleware, async (req, res) => {
       await notification.save();
     }
 
+    // Yeni ürün eklendiği için kullanıcının ürün önbelleğini temizle
+    await clearUserCache(req.user.userId);
+
     res.status(201).json({ message: 'Ürün eklendi.', product });
   } catch (error) {
     res.status(500).json({ message: 'Sunucu hatası.', error: error.message });
@@ -49,6 +53,15 @@ router.post('/', authMiddleware, async (req, res) => {
 router.get('/', authMiddleware, async (req, res) => {
   try {
     const { search, category, page = 1, limit = 20 } = req.query;
+    const cacheKey = `user:${req.user.userId}:products:search:${search || ''}:cat:${category || ''}:p:${page}:l:${limit}`;
+
+    // Önce Redis cache kontrol et
+    const cachedData = await getCache(cacheKey);
+    if (cachedData) {
+      console.log('Redis: Ürün listesi önbellekten getirildi.');
+      return res.status(200).json(cachedData);
+    }
+
     const filter = { userId: req.user.userId };
 
     if (search) {
@@ -70,12 +83,17 @@ router.get('/', authMiddleware, async (req, res) => {
 
     const total = await Product.countDocuments(filter);
 
-    res.status(200).json({
+    const responseData = {
       products,
       total,
       page: parseInt(page),
       totalPages: Math.ceil(total / limit)
-    });
+    };
+
+    // Sorgu sonucunu Redis cache'e kaydet (5 dakika)
+    await setCache(cacheKey, responseData, 300);
+
+    res.status(200).json(responseData);
   } catch (error) {
     res.status(500).json({ message: 'Sunucu hatası.', error: error.message });
   }
@@ -172,6 +190,9 @@ router.put('/:id/stock', authMiddleware, async (req, res) => {
       }
     }
 
+    // Stok güncellendiği için kullanıcının ürün önbelleğini temizle
+    await clearUserCache(req.user.userId);
+
     res.status(200).json({ message: 'Stok güncellendi.', product });
   } catch (error) {
     res.status(500).json({ message: 'Sunucu hatası.', error: error.message });
@@ -190,6 +211,9 @@ router.delete('/:id', authMiddleware, async (req, res) => {
     if (!product) {
       return res.status(404).json({ message: 'Ürün bulunamadı.' });
     }
+
+    // Ürün silindiği için kullanıcının ürün önbelleğini temizle
+    await clearUserCache(req.user.userId);
 
     res.status(200).json({ message: 'Ürün silindi.' });
   } catch (error) {

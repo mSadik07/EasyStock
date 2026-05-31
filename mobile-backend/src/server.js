@@ -16,8 +16,18 @@ const app = express();
 app.use(cors());
 app.use(express.json());
 
-// Veritabanı bağlantısı
+// Veritabanı ve Redis bağlantıları
 connectDB();
+const { connectRedis } = require('./config/redis');
+connectRedis().catch(err => console.error('Redis bağlantı hatası:', err.message));
+
+// RabbitMQ bağlantısı ve asenkron worker'ların başlatılması
+const { connectRabbitMQ } = require('./config/rabbitmq');
+const { startNotificationWorker } = require('./workers/notificationWorker');
+
+connectRabbitMQ().then(() => {
+  startNotificationWorker();
+});
 
 // Rotalar
 app.use('/auth', authRoutes);

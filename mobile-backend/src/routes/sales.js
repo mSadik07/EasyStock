@@ -4,6 +4,7 @@ const Sale = require('../models/Sale');
 const Product = require('../models/Product');
 const Notification = require('../models/Notification');
 const authMiddleware = require('../middleware/auth');
+const { clearUserCache } = require('../config/redis');
 
 // GEREKSİNİM 13: Satış Kaydı Oluşturma
 // POST /sales
@@ -42,17 +43,16 @@ router.post('/', authMiddleware, async (req, res) => {
     });
     await sale.save();
 
-    // Kritik stok kontrolü
-    if (product.stock <= product.criticalStock) {
-      const notification = new Notification({
-        userId: req.user.userId,
-        title: 'Kritik Stok Uyarısı',
-        message: `${product.name} stoğu ${product.stock} adede düştü!`,
-        type: 'low_stock',
-        productId: product._id
-      });
-      await notification.save();
-    }
+    // Satış yapıldığı için kullanıcının ürün stok önbelleğini temizle
+    await clearUserCache(req.user.userId);
+
+    // Kritik stok kontrolü ve bildirim oluşturmayı asenkron olarak RabbitMQ'ya devret
+    const { publishToQueue } = require('../config/rabbitmq');
+    await publishToQueue('sale_events', {
+      productId: product._id,
+      quantity: parseInt(quantity),
+      userId: req.user.userId
+    });
 
     res.status(201).json({
       message: 'Satış kaydedildi.',

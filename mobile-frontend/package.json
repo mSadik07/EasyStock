@@ -3,21 +3,20 @@
   "main": "node_modules/expo/AppEntry.js",
   "version": "1.0.0",
   "dependencies": {
-    "@expo/ui": "~56.0.13",
+    "@expo/ui": "~56.0.15",
     "@react-native-async-storage/async-storage": "2.2.0",
     "@react-native-picker/picker": "2.11.4",
     "@react-navigation/bottom-tabs": "^7.16.1",
     "@react-navigation/native": "^7.2.4",
     "@react-navigation/stack": "^7.9.2",
     "axios": "^1.16.1",
-    "expo": "~56.0.4",
+    "expo": "~56.0.8",
     "expo-constants": "~56.0.15",
     "expo-device": "~56.0.4",
     "expo-font": "~56.0.5",
     "expo-glass-effect": "~56.0.4",
     "expo-image": "~56.0.9",
-    "expo-linking": "~56.0.11",
-    "expo-router": "~56.2.6",
+    "expo-linking": "~56.0.13",
     "expo-splash-screen": "~56.0.10",
     "expo-status-bar": "~56.0.4",
     "expo-symbols": "~56.0.5",
@@ -42,10 +41,13 @@
   "scripts": {
     "start": "expo start",
     "reset-project": "node ./scripts/reset-project.js",
-    "android": "expo start --android",
-    "ios": "expo start --ios",
+    "android": "expo run:android",
+    "ios": "expo run:ios",
     "web": "expo start --web",
     "lint": "expo lint"
+  },
+  "engines": {
+    "node": ">=20.16.0"
   },
   "private": true
 }
