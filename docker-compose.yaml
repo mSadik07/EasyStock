@@ -32,8 +32,6 @@ services:
       - backend
     networks:
       - easystock-network
-    volumes:
-      - ./easystock-frontend:/usr/share/nginx/html # Bilgisayardaki değişimi anında Docker'a iletir
 
 networks:
   easystock-network:
