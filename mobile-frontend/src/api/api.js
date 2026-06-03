@@ -7,11 +7,12 @@ const getBaseUrl = () => {
   const hostUri = Constants.expoConfig?.hostUri;
   if (hostUri) {
     const ip = hostUri.split(':')[0];
-    if (ip && !ip.includes('exp.direct') && !ip.includes('ngrok')) {
+    if (ip && !ip.includes('exp.direct') && !ip.includes('ngrok') && !ip.includes('loca.lt')) {
       return `http://${ip}:5000`;
     }
   }
-  return 'http://192.168.31.163:5000'; // Bilgisayarınızın güncel Wi-Fi IP adresi
+  // ngrok URL - sabit URL, bilgisayar açıkken her zaman aynı kalır
+  return 'https://colt-pampered-sprite.ngrok-free.dev';
 };
 
 const BASE_URL = getBaseUrl();
@@ -19,7 +20,10 @@ const BASE_URL = getBaseUrl();
 const api = axios.create({
   baseURL: BASE_URL,
   timeout: 10000,
-  headers: { 'Content-Type': 'application/json' }
+  headers: {
+    'Content-Type': 'application/json',
+    'bypass-tunnel-reminder': 'true'  // localtunnel reminder sayfasını atla
+  }
 });
 
 // Her istekte token ekle

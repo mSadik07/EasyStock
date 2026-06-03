@@ -3,6 +3,11 @@
     "name": "mobile-frontend",
     "slug": "mobile-frontend",
     "version": "1.0.0",
+    "runtimeVersion": "1.0.0",
+    "updates": {
+      "url": "https://u.expo.dev/0854837e-682d-4a6f-b134-00486cf211d9",
+      "fallbackToCacheTimeout": 0
+    },
     "orientation": "portrait",
     "icon": "./assets/images/icon.png",
     "scheme": "mobilefrontend",
@@ -18,7 +23,8 @@
         "monochromeImage": "./assets/images/android-icon-monochrome.png"
       },
       "predictiveBackGestureEnabled": false,
-      "package": "easystock.a"
+      "package": "easystock.a",
+      "usesCleartextTraffic": true
     },
     "web": {
       "output": "single",
@@ -34,7 +40,8 @@
             "imageWidth": 76
           }
         }
-      ]
+      ],
+      "expo-updates"
     ],
     "experiments": {
       "typedRoutes": false,
