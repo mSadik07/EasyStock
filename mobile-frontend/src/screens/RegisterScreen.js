@@ -24,8 +24,8 @@ export default function RegisterScreen({ navigation }) {
         { text: 'Tamam', onPress: () => navigation.navigate('Login') }
       ]);
     } catch (error) {
-      const msg = error.response?.data?.message || 'Kayıt yapılamadı.';
-      Alert.alert('Hata', msg);
+      const msg = error.response?.data?.message || error.message || 'Kayıt yapılamadı. Sunucuya bağlanılamıyor.';
+      Alert.alert('Bağlantı Hatası', msg);
     } finally {
       setLoading(false);
     }

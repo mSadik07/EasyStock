@@ -1,28 +1,15 @@
 import axios from 'axios';
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import Constants from 'expo-constants';
 
-// Dinamik olarak bilgisayarın yerel IP adresini veya güncel IP'yi belirle
-const getBaseUrl = () => {
-  const hostUri = Constants.expoConfig?.hostUri;
-  if (hostUri) {
-    const ip = hostUri.split(':')[0];
-    if (ip && !ip.includes('exp.direct') && !ip.includes('ngrok') && !ip.includes('loca.lt')) {
-      return `http://${ip}:5000`;
-    }
-  }
-  // ngrok URL - sabit URL, bilgisayar açıkken her zaman aynı kalır
-  return 'https://colt-pampered-sprite.ngrok-free.dev';
-};
-
-const BASE_URL = getBaseUrl();
+// Cloudflare tüneli - telefon 4.5G üzerinden bu adrese bağlanır
+// cloudflared.exe tunnel --url http://localhost:5000 komutu çalıştırılınca yeni URL alınır
+const BASE_URL = 'https://authors-works-kyle-erik.trycloudflare.com';
 
 const api = axios.create({
   baseURL: BASE_URL,
-  timeout: 10000,
+  timeout: 15000,
   headers: {
     'Content-Type': 'application/json',
-    'bypass-tunnel-reminder': 'true'  // localtunnel reminder sayfasını atla
   }
 });
 
@@ -34,6 +21,18 @@ api.interceptors.request.use(async (config) => {
   }
   return config;
 });
+
+// Hata yakalama interceptor
+api.interceptors.response.use(
+  (response) => response,
+  (error) => {
+    if (!error.response) {
+      // Ağ hatası - sunucuya ulaşılamıyor
+      error.message = `Sunucuya bağlanılamadı (${BASE_URL}). Telefon ve bilgisayar aynı Wi-Fi ağında mı?`;
+    }
+    return Promise.reject(error);
+  }
+);
 
 // AUTH
 export const register = (data) => api.post('/auth/register', data);
